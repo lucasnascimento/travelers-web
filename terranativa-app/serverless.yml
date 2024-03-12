@@ -1,0 +1,19 @@
+service: terranativa-app
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: production
+
+plugins:
+  - serverless-s3-deploy
+
+custom:
+  assets:
+    targets:
+      - bucket: customer-terranativa-d702442654ed
+        files:
+          - source: dist
+            globs: "**/*"
+

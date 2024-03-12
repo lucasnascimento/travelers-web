@@ -1,10 +1,9 @@
 import { Box, Button, TextField, Typography } from "@material-ui/core";
-import axios from "axios";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useNavigate } from "react-router-dom";
-import { useIntl } from "react-intl";
+import { performLogin } from "../services/auth";
 
 function LoginForm() {
   const { register, handleSubmit } = useForm();
@@ -15,13 +14,9 @@ function LoginForm() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/admin/login",
-        data
-      );
-      localStorage.setItem("access_token", response.data.access_token);
+      performLogin(data);
       setMessage(formatMessage({ id: "login.success" }));
-      navigate("/itinerary"); // Navega para a página de roteiros após o login bem-sucedido
+      navigate("/itinerary");
     } catch (error) {
       setMessage(formatMessage({ id: "login.failed" }));
     }

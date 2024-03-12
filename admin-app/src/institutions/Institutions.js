@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useIntl } from "react-intl";
 import FileUpload from "../fileupload/FileUpload";
+import { fetchInstitutions, deleteInstitution } from "../services/institutions";
 
 function Institutions() {
   const [institutions, setInstitutions] = useState([]);
@@ -39,14 +40,7 @@ function Institutions() {
   };
 
   const fetchInstitutions = async () => {
-    const response = await axios.get(
-      "http://localhost:5000/api/admin/institution",
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-      }
-    );
+    const response = fetchInstitutions();
     setInstitutions(response.data.data);
   };
 
