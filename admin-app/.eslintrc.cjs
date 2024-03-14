@@ -23,8 +23,7 @@ module.exports = {
   ],
   "ignorePatterns": [
     "dist",
-    "vite.config.ts",
-    '.eslintrc.cjs'
+    "vite.config.ts"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
