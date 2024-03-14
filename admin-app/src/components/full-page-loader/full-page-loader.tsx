@@ -1,11 +1,8 @@
 import * as React from 'react'
 
-import Logo from '../../assets/logo.svg'
-
 export const FullPageLoaderComponent = () => (
-  <div className="bg-black h-screen flex items-center justify-center fixed w-full z-50">
+  <div className="bg-gray-50 dark:bg-gray-900 h-screen flex items-center justify-center fixed w-full z-50">
     <div className="container flex flex-col justify-center items-center gap-7">
-      <img src={Logo} alt="Terranativa Ecoturismo" className="w-36" />
       <svg
         aria-hidden="true"
         className="w-20 h-20 text-gray-200 animate-spin dark:text-gray-600 fill-slate-800"

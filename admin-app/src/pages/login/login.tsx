@@ -10,7 +10,7 @@ export const Login = () => {
     handleSubmit,
     register,
   } = useForm()
-  const { isError, isPending, mutate, } = useAuthenticate()
+  const { isError, isPending, mutate } = useAuthenticate()
 
   const handleOnSubmit = (data: any) => mutate(data)
 
@@ -26,7 +26,6 @@ export const Login = () => {
             />
           ) : <></>
         }
-
         <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
           <form onSubmit={handleSubmit(handleOnSubmit)}>
             <div className="flex flex-col gap-3">

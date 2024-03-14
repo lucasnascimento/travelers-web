@@ -4,7 +4,7 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline'
 export type Props = {
   fullWidth?: boolean
   className?: string
-  colorScheme?: 'blue'
+  colorScheme?: 'blue' | 'gray'
   disabled?: boolean
   size?: 'xs' | 'sm' | 'md' | 'lg'
   variant?: 'solid' | 'outline'
@@ -23,9 +23,16 @@ const sizesClasses = {
 }
 
 const getVariantClasses = (colorScheme: string) => {
+  if (colorScheme === 'gray') {
+    return {
+      solid: 'inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-600 text-white hover:bg-gray-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600',
+      outline: 'inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-gray-500 text-gray-500 dark:hover:border-gray-500 dark:hover:bg-gray-500 dark:border-gray-400 dark:text-gray-400 hover:bg-gray-600 hover:text-white disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600',
+    }
+  }
+
   return {
-    outline: 'inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600',
     solid: 'inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600',
+    outline: 'inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 dark:hover:border-blue-600 dark:hover:bg-blue-600 dark:border-blue-500 dark:text-blue-500 hover:bg-blue-700 hover:text-white disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600',
   }
 }
 

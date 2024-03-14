@@ -4,6 +4,8 @@ import * as ReactQuery from '@tanstack/react-query'
 import { authenticate } from '../../services'
 import { useForm as useBaseForm } from '../../hooks'
 import { formTexts } from '../../constants'
+import { AuthenticateRequest } from '../../types'
+import { LocalStorage } from '../../utils'
 
 export const useForm = () => {
   const schema = zod.object({
@@ -30,7 +32,7 @@ export const useForm = () => {
 const AUTHENTICATE_QUERY = 'use_authenticate'
 
 export const useAuthenticate = () => {
-  const resultMutation = ReactQuery.useMutation({
+  const { mutateAsync: rawMutate, ...rest } = ReactQuery.useMutation({
     mutationFn: (data: {
       payload: any
     }) => (
@@ -38,6 +40,12 @@ export const useAuthenticate = () => {
     ),
     mutationKey: [AUTHENTICATE_QUERY],
   })
+  const handleMutation = (payload: AuthenticateRequest) => (
+    rawMutate({ payload }).then((response) => LocalStorage.saveLogin(response))
+  )
 
-  return resultMutation
+  return {
+    ...rest,
+    mutate: handleMutation,
+  }
 }

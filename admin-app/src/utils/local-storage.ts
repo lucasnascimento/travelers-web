@@ -1,5 +1,5 @@
 const BASE_NAME = 'travelersapp'
-const FORM_DATA = `${BASE_NAME}-form-data`
+const LOGIN = `${BASE_NAME}-login`
 
 const save = (key: string, data: any) => (
   localStorage.setItem(key, JSON.stringify(data))
@@ -9,12 +9,12 @@ const load = (key: string) => {
   return data ? JSON.parse(data) : null
 }
 const remove = (key: string) => localStorage.removeItem(key)
-const saveFormData = (data: any) => save(FORM_DATA, data)
-const loadFormData = () => load(FORM_DATA)
-const removeFormData = () => remove(FORM_DATA)
+const saveLogin = (data: any) => save(LOGIN, data)
+const loadLogin= () => load(LOGIN)
+const removeLogin= () => remove(LOGIN)
 
 export const LocalStorage = {
-  loadFormData,
-  removeFormData,
-  saveFormData,
+  loadLogin,
+  removeLogin,
+  saveLogin,
 }
