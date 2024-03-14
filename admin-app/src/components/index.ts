@@ -1,3 +1,4 @@
+export { Alert } from './alert'
 export { Button } from './button'
 export { FullPageLoader } from './full-page-loader'
 export { Modal, useModal } from './modal'

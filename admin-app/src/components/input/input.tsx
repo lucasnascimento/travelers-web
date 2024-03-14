@@ -55,7 +55,7 @@ export const Input = React.forwardRef<ReactInputMask, Props>(
           !mask && (
             <input
               ref={selectRef as React.RefObject<HTMLInputElement>}
-              className={`mb-2 py-3 px-4 block w-full ${error ? 'border-red-500 dark:border-red-700' : 'border-gray-200 dark:border-gray-700'} rounded-lg text-sm ${error ? 'focus:border-red-500 focus:ring-red-500' : 'focus:border-blue-500 focus:ring-blue-500'} disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:text-gray-400 dark:focus:ring-gray-600`}
+              className={`mb-2 py-3 px-4 block w-full ${error ? 'border-red-500 dark:border-red-900' : 'border-gray-200 dark:border-gray-700'} rounded-lg text-sm ${error ? 'focus:border-red-500 focus:ring-red-500' : 'focus:border-blue-500 focus:ring-blue-500'} disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:text-gray-400 dark:focus:ring-gray-600`}
               id={id}
               type={type}
               name={name}
@@ -65,8 +65,8 @@ export const Input = React.forwardRef<ReactInputMask, Props>(
           )
         }
 
-        {error ? <p className="text-red-500 dark:text-red-600 text-xs">{error}</p> : null}
-        {!error && tip ? <p className="text-gray-600 dark:text-gray-200 text-xs">{tip}</p> : null}
+        {error ? <p className="mb-2 text-red-500 dark:text-red-400 text-xs">{error}</p> : null}
+        {!error && tip ? <p className="mb-2 text-gray-600 dark:text-gray-200 text-xs">{tip}</p> : null}
       </fieldset>
     )
   }

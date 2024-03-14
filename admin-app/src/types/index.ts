@@ -1,4 +1,4 @@
-export * from './get-institutions'
+export * from './authentication'
 export * from './get-institutions-itineraries'
 export * from './get-institutions-details'
 export * from './get-itineraries-details'
