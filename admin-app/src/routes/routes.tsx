@@ -1,8 +1,22 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import { Login, NotFound } from '../pages'
+import {
+  Home, Institutions, Login, NotFound,
+} from '../pages'
 import { ProtectedRoute } from './protect-route'
 
 export const routes = {
+  home: {
+    path: '/',
+  },
+  institutions: {
+    path: '/instituicoes',
+  },
+  itineraries: {
+    path: '/roteiros',
+  },
+  finances: {
+    path: '/financas',
+  },
   login: {
     path: '/login',
   },
@@ -19,6 +33,14 @@ const router = createBrowserRouter([
   {
     element: <Login />,
     path: routes.login.path,
+  },
+  {
+    element: <Home />,
+    path: routes.home.path,
+  },
+  {
+    element: <Institutions />,
+    path: routes.institutions.path,
   },
 ])
 
