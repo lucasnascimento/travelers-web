@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Navigate } from 'react-router-dom'
 
-import { useGlobalContext } from '../providers'
+import { LocalStorage } from '../utils'
 import { routes } from './index'
 
 type Props = {
@@ -9,8 +9,9 @@ type Props = {
 }
 
 export const ProtectedRoute = ({ children }: Props) => {
-  const { password } = useGlobalContext()
-  const isLoggedIn = !!password
+  const loginData = LocalStorage.loadLogin()
+  const accessToken = loginData?.access_token
+  const isLoggedIn = !!accessToken
 
   return isLoggedIn ? children : <Navigate to={routes.login.path} />
 }

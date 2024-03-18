@@ -13,7 +13,7 @@ export const useForm = () => {
       .string({
         required_error: formTexts.required,
       })
-      .email({ message: formTexts.email })
+      // .email({ message: formTexts.email })
       .min(6, { message: formTexts.required }),
     password: zod
       .string({
@@ -46,6 +46,6 @@ export const useAuthenticate = () => {
 
   return {
     ...rest,
-    mutate: handleMutation,
+    mutateAsync: handleMutation,
   }
 }

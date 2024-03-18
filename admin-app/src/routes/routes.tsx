@@ -5,6 +5,9 @@ import {
 import { ProtectedRoute } from './protect-route'
 
 export const routes = {
+  finances: {
+    path: '/financas',
+  },
   home: {
     path: '/',
   },
@@ -13,9 +16,6 @@ export const routes = {
   },
   itineraries: {
     path: '/roteiros',
-  },
-  finances: {
-    path: '/financas',
   },
   login: {
     path: '/login',
@@ -35,11 +35,11 @@ const router = createBrowserRouter([
     path: routes.login.path,
   },
   {
-    element: <Home />,
+    element: <ProtectedRoute><Home /></ProtectedRoute>,
     path: routes.home.path,
   },
   {
-    element: <Institutions />,
+    element: <ProtectedRoute><Institutions /></ProtectedRoute>,
     path: routes.institutions.path,
   },
 ])

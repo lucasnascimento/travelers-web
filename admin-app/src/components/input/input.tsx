@@ -68,7 +68,7 @@ export const Input = React.forwardRef<ReactInputMask, Props>(
             mask && (
               <InputMask
                 ref={selectRef as React.RefObject<ReactInputMask>}
-                className={`${Icon ? 'pl-12' : ''} shadow appearance-none border ${error ? 'border-red-500' : ''} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
+                className={`${Icon ? 'pl-12' : ''} py-3 px-4 block w-full ${error ? 'border-red-500 dark:border-red-900' : 'border-gray-200 dark:border-gray-700'} rounded-lg text-sm ${error ? 'focus:border-red-500 focus:ring-red-500' : 'focus:border-blue-500 focus:ring-blue-500'} disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:text-gray-400 dark:focus:ring-gray-600`}
                 id={id}
                 type={type}
                 name={name}

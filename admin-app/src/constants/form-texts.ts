@@ -1,4 +1,5 @@
 export const formTexts = {
+  cnpj: 'Esse campo precisa ser um CNPJ válido',
   cpf: 'Esse campo precisa ser um CPF válido',
   email: 'Esse campo precisa ser um e-mail válido',
   invalid: 'Esse campo não está no formato válido',

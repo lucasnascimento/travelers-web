@@ -1,8 +1,11 @@
+import { useNavigate } from 'react-router-dom'
+
 import { Alert, Button, Input } from '../../components'
 import { COMMON_STRINGS } from '../../strings'
+import { routes } from '../../routes'
 
 import { STRINGS } from './strings'
-import { useForm, useAuthenticate } from './hooks'
+import { useAuthenticate, useForm } from './hooks'
 
 export const Login = () => {
   const {
@@ -10,21 +13,27 @@ export const Login = () => {
     handleSubmit,
     register,
   } = useForm()
-  const { isError, isPending, mutate } = useAuthenticate()
+  const { isError, isPending, mutateAsync } = useAuthenticate()
+  const navigate = useNavigate()
 
-  const handleOnSubmit = (data: any) => mutate(data)
+  const handleOnSubmit = (data: any) => {
+    mutateAsync(data)
+      .then(() => navigate(routes.home.path))
+  }
 
   return (
     <main className="h-full p-6 flex items-center justify-center">
       <div className="min-w-96 flex flex-col gap-4">
         {
-          isError ? (
-            <Alert
-              title={COMMON_STRINGS.error_title}
-              description={COMMON_STRINGS.error_description}
-              type="error"
-            />
-          ) : <></>
+          isError
+            ? (
+              <Alert
+                title={COMMON_STRINGS.error_title}
+                description={COMMON_STRINGS.error_description}
+                type="error"
+              />
+            )
+            : <></>
         }
         <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
           <form onSubmit={handleSubmit(handleOnSubmit)}>

@@ -1,3 +1,5 @@
 export * from './change-url-by-tag-a'
 export * from './date-formatter'
 export * from './local-storage'
+export * from './validate-cnpj'
+export * from './remove-special-characters'
