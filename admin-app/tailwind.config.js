@@ -7,7 +7,11 @@ export default {
     'node_modules/preline/dist/*.js',
   ],
   theme: {
-    extend: {},
+    extend: {
+      zIndex: {
+        '90': '90',
+      },
+    },
   },
   plugins: [
     require('@tailwindcss/forms'),

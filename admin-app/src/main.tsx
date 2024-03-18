@@ -7,8 +7,6 @@ import { variables } from './config'
 import { FullPageLoader } from './components'
 
 import './index.css'
-import 'slick-carousel/slick/slick.css'
-import 'slick-carousel/slick/slick-theme.css'
 import 'date-input-polyfill'
 
 const prepare = async () => {

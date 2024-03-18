@@ -1,8 +1,9 @@
 export const STRINGS = {
-  create_button_label: 'Criar',
-  delete_button_label: 'Remover',
-  edit_button_label: 'Editar',
+  button_create_label: 'Criar',
+  button_search_label: 'Pesquisar',
+  input_search_placeholder: 'Digite sua pesquisa',
   next_button_label: 'Próximo',
   previous_button_label: 'Voltar',
+  table_no_results: 'Nenhum resultado encontrado',
   table_results_label: 'resultados',
 }

@@ -10,8 +10,8 @@ const load = (key: string) => {
 }
 const remove = (key: string) => localStorage.removeItem(key)
 const saveLogin = (data: any) => save(LOGIN, data)
-const loadLogin= () => load(LOGIN)
-const removeLogin= () => remove(LOGIN)
+const loadLogin = () => load(LOGIN)
+const removeLogin = () => remove(LOGIN)
 
 export const LocalStorage = {
   loadLogin,

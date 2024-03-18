@@ -6,8 +6,8 @@ export const useModal = () => {
   const handleCloseModal = () => setIsOpen(false)
 
   return {
-    closeModal: handleCloseModal,
     isOpen,
-    openModal: handleOpenModal,
+    onClose: handleCloseModal,
+    onOpen: handleOpenModal,
   }
 }

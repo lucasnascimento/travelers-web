@@ -116,7 +116,7 @@ export const DashboardWrapper = ({
           <ul className="space-y-1.5">
             <li>
               <Link
-                className={`flex items-center gap-x-3.5 py-2 px-2.5 ${highlightActiveMenuItem(routes.home.path) ? 'bg-gray-100' : ''} text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
+                className={`flex items-center gap-x-3.5 py-2 px-2.5 ${highlightActiveMenuItem(routes.home.path) ? 'bg-gray-100 dark:bg-gray-900' : ''} text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:hover:bg-gray-900`}
                 to={routes.home.path}
               >
                 <HomeIcon className="size-4" />
@@ -126,7 +126,7 @@ export const DashboardWrapper = ({
 
             <li>
               <Link
-                className={`flex items-center gap-x-3.5 py-2 px-2.5 ${highlightActiveMenuItem(routes.institutions.path) ? 'bg-gray-100' : ''} text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
+                className={`flex items-center gap-x-3.5 py-2 px-2.5 ${highlightActiveMenuItem(routes.institutions.path) ? 'bg-gray-100 dark:bg-gray-900' : ''} text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:hover:bg-gray-900`}
                 to={routes.institutions.path}
               >
                 <BuildingOfficeIcon className="size-4" />
@@ -136,7 +136,7 @@ export const DashboardWrapper = ({
 
             <li>
               <Link
-                className={`flex items-center gap-x-3.5 py-2 px-2.5 ${highlightActiveMenuItem(routes.itineraries.path) ? 'bg-gray-100' : ''} text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
+                className={`flex items-center gap-x-3.5 py-2 px-2.5 ${highlightActiveMenuItem(routes.itineraries.path) ? 'bg-gray-100 dark:bg-gray-900' : ''} text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:hover:bg-gray-900`}
                 to={routes.itineraries.path}
               >
                 <MapPinIcon className="size-4" />
@@ -146,7 +146,7 @@ export const DashboardWrapper = ({
 
             <li>
               <Link
-                className={`flex items-center gap-x-3.5 py-2 px-2.5 ${highlightActiveMenuItem(routes.finances.path) ? 'bg-gray-100' : ''} text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600`}
+                className={`flex items-center gap-x-3.5 py-2 px-2.5 ${highlightActiveMenuItem(routes.finances.path) ? 'bg-gray-100 dark:bg-gray-900' : ''} text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:hover:bg-gray-900`}
                 to={routes.finances.path}
               >
                 <CurrencyDollarIcon className="size-4" />

@@ -47,7 +47,7 @@ const getVariantClasses = (colorScheme: string) => {
 const rawButtonClasses = 'rounded text-center transition flex gap-2 items-center justify-center'
 
 export const Button = ({
-  className,
+  className = '',
   colorScheme = 'blue',
   disabled = false,
   fullWidth = false,
@@ -63,7 +63,7 @@ export const Button = ({
   const fullWidthClass = fullWidth ? 'w-full' : ''
   const variantClasses = getVariantClasses(colorScheme)[variant]
   const disabledClasses = disabled || loading ? 'opacity-50 cursor-not-allowed' : ''
-  const buttonClasses = `${fullWidthClass} ${rawButtonClasses} ${sizesClasses[size]} ${variantClasses} ${className} ${disabledClasses}`
+  const buttonClasses = `${fullWidthClass} ${rawButtonClasses} ${sizesClasses[size]} ${variantClasses} ${disabledClasses} ${className}`
 
   return (
     <button className={`${buttonClasses}`} type={type} disabled={disabled || loading} {...props}>
