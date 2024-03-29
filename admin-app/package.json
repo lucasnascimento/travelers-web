@@ -30,6 +30,7 @@
     "date-fns": "^3.3.1",
     "date-input-polyfill": "^2.14.0",
     "dompurify": "^3.0.8",
+    "jwt-decode": "^4.0.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.3",
     "million": "^3.0.6",

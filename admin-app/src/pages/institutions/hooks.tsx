@@ -14,7 +14,7 @@ import { formTexts } from '../../constants'
 const LIST_INSTITUTIONS_QUERY = 'use_list_institutions'
 
 export const useListInstitutions = () => {
-  const loginData = LocalStorage.loadLogin()
+  const loginData = LocalStorage.loadAccessToken()
   const accessToken = loginData.access_token
 
   const resultQuery = ReactQuery.useQuery({
@@ -105,7 +105,7 @@ export const useForm = () => {
 const CREATE_INSTITUTIONS_QUERY = 'use_create_institutions'
 
 export const useCreateInstitution = () => {
-  const loginData = LocalStorage.loadLogin()
+  const loginData = LocalStorage.loadAccessToken()
   const accessToken = loginData.access_token
 
   const resultMutation = ReactQuery.useMutation({
@@ -121,7 +121,7 @@ export const useCreateInstitution = () => {
 const UPDATE_INSTITUTIONS_QUERY = 'use_update_institutions'
 
 export const useUpdateInstitution = () => {
-  const loginData = LocalStorage.loadLogin()
+  const loginData = LocalStorage.loadAccessToken()
   const accessToken = loginData.access_token
 
   const resultMutation = ReactQuery.useMutation({

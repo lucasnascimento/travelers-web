@@ -42,7 +42,7 @@ export const DashboardWrapper = ({
   }
 
   const handleOnClickLogout = () => {
-    LocalStorage.removeLogin()
+    LocalStorage.removeAccessToken()
     navigate(routes.login.path)
   }
 

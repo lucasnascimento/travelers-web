@@ -1,5 +1,6 @@
 import { z as zod } from 'zod'
 import * as ReactQuery from '@tanstack/react-query'
+import { jwtDecode } from 'jwt-decode'
 
 import { authenticate } from '../../services'
 import { useForm as useBaseForm } from '../../hooks'
@@ -41,7 +42,15 @@ export const useAuthenticate = () => {
     mutationKey: [AUTHENTICATE_QUERY],
   })
   const handleMutation = (payload: AuthenticateRequest) => (
-    rawMutate({ payload }).then((response) => LocalStorage.saveLogin(response))
+    rawMutate({ payload })
+      .then((response) => {
+        const accessToken = response.access_token
+        const decodedToken = jwtDecode(accessToken)
+        const expiresInEpoch = decodedToken.exp
+
+        LocalStorage.saveAccessToken(accessToken)
+        LocalStorage.saveExpiresInEpoch(expiresInEpoch)
+      })
   )
 
   return {

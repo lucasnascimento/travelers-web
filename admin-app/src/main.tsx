@@ -1,13 +1,29 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 
-import { ErrorBoundary, GlobalContextProvider, ReactQueryProvider } from './providers'
+import { LocalStorage } from './utils'
+
+import { ErrorBoundary, ReactQueryProvider } from './providers'
 import { Router } from './routes'
 import { variables } from './config'
 import { FullPageLoader } from './components'
 
 import './index.css'
 import 'date-input-polyfill'
+
+const secondsToVerify = 60 * 5
+setInterval(() => {
+  const expiresInEpoch = LocalStorage.loadExpiresInEpoch()
+  const currentEpoch = new Date().getTime() / 1000
+  const isTokenExpired = expiresInEpoch < currentEpoch
+
+  if (expiresInEpoch && isTokenExpired) {
+    LocalStorage.removeAccessToken()
+    LocalStorage.removeExpiresInEpoch()
+
+    window.location.href = '/login'
+  }
+}, secondsToVerify)
 
 const prepare = async () => {
   if (variables.MOCK_ENABLED === 'true') {
