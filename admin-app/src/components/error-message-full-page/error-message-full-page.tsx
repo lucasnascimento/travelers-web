@@ -37,33 +37,33 @@ export const ErrorMessageFullPage = ({
 
   return (
     <>
-    <main className="h-full p-6 flex items-center justify-center">
-      <div className="p-16 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
-        <div className="flex flex-col gap-2 items-center justify-center">
-          <h1 className="font-semibold text-3xl font-bold text-gray-800 dark:text-white">
-            {title}
-          </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {description}
-          </p>
+      <main className="h-full p-6 flex items-center justify-center">
+        <div className="p-16 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
+          <div className="flex flex-col gap-2 items-center justify-center">
+            <h1 className="font-semibold text-3xl font-bold text-gray-800 dark:text-white">
+              {title}
+            </h1>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              {description}
+            </p>
+          </div>
+          <div className="mt-14 flex gap-4">
+            <Button
+              label={STRINGS.go_home_label}
+              onClick={handleOnClickHome}
+              fullWidth
+            />
+            <Button
+              label={STRINGS.back_label}
+              onClick={handleOnClickBack}
+              variant="outline"
+              colorScheme="gray"
+              fullWidth
+            />
+          </div>
         </div>
-        <div className="mt-14 flex gap-4">
-          <Button
-            label={STRINGS.go_home_label}
-            onClick={handleOnClickHome}
-            fullWidth
-          />
-          <Button
-            label={STRINGS.back_label}
-            onClick={handleOnClickBack}
-            variant="outline"
-            colorScheme="gray"
-            fullWidth
-          />
-        </div>
-      </div>
-    </main>
-    {/* <div className="bg-white container mx-auto h-screen flex flex-col items-center justify-center gap-4 px-8">
+      </main>
+      {/* <div className="bg-white container mx-auto h-screen flex flex-col items-center justify-center gap-4 px-8">
       <div className="flex flex-col gap-2 items-center justify-center">
         <h1 className="font-semibold text-3xl text-gray-800 text-center">
           { title }

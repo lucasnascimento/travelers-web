@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { TrashIcon } from '@heroicons/react/24/outline'
+// import { TrashIcon } from '@heroicons/react/24/outline'
 
 import {
   Alert,
@@ -10,7 +10,7 @@ import {
   RegisterListTable,
   RegisterListTableCol,
   RegisterListTableRow,
-  Stats,
+  // Stats,
   Switch,
   useModal,
 } from '../../components'
@@ -37,7 +37,8 @@ export const Institutions = () => {
     error: errorOnUpdateInstitution,
     mutateAsync: mutateAsyncUpdateInstitution,
   } = useUpdateInstitution()
-  const { isOpen, onClose, onOpen } = useModal()
+  // const { isOpen, onClose, onOpen } = useModal()
+  const { isOpen, onClose } = useModal()
   const {
     formState: { errors },
     handleSubmit,
@@ -122,39 +123,37 @@ export const Institutions = () => {
             />
           </div>
           {
-            hasBankingAccount
-              ? (
-                <div className="flex flex-col md:flex-row gap-6">
-                  <Input
-                    id="bank_agency"
-                    type="number"
-                    label="Agência"
-                    placeholder="Digite a agência"
-                    error={errors?.banking_account?.bank_agency?.message}
-                    {...register('banking_account.bank_agency')}
-                  />
-                  <Input
-                    id="account_number"
-                    type="text"
-                    label="Conta"
-                    placeholder="Digite a conta"
-                    mask="99999-9"
-                    error={errors?.banking_account?.account_number?.message}
-                    {...register('banking_account.account_number', {
-                      setValueAs: (value) => removeSpecialCharacters(value),
-                    })}
-                  />
-                  <Input
-                    id="bank_code"
-                    type="number"
-                    label="Código do banco"
-                    placeholder="Digite o código do banco"
-                    error={errors?.banking_account?.bank_code?.message}
-                    {...register('banking_account.bank_code')}
-                  />
-                </div>
-              )
-              : <></>
+            hasBankingAccount && (
+              <div className="flex flex-col md:flex-row gap-6">
+                <Input
+                  id="bank_agency"
+                  type="number"
+                  label="Agência"
+                  placeholder="Digite a agência"
+                  error={errors?.banking_account?.bank_agency?.message}
+                  {...register('banking_account.bank_agency')}
+                />
+                <Input
+                  id="account_number"
+                  type="text"
+                  label="Conta"
+                  placeholder="Digite a conta"
+                  mask="99999-9"
+                  error={errors?.banking_account?.account_number?.message}
+                  {...register('banking_account.account_number', {
+                    setValueAs: (value) => removeSpecialCharacters(value),
+                  })}
+                />
+                <Input
+                  id="bank_code"
+                  type="number"
+                  label="Código do banco"
+                  placeholder="Digite o código do banco"
+                  error={errors?.banking_account?.bank_code?.message}
+                  {...register('banking_account.bank_code')}
+                />
+              </div>
+            )
           }
           <div className="flex flex-col md:flex-row mt-6">
             <Button label="Criar" type="submit" />
@@ -168,17 +167,17 @@ export const Institutions = () => {
         ]}
       >
         <main className="flex flex-col gap-8">
-          <section className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
+          {/* <section className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
             <Stats
-              title="Instituições"
+              title={STRINGS.header_institutions}
               value={17}
               type="number"
             />
-          </section>
+          </section> */}
           {registeredWithSuccess && <Alert title={STRINGS.registered_success} type="success" />}
           <section>
             <RegisterListTable
-              onClickCreate={onOpen}
+              // onClickCreate={onOpen}
               loading={isFetching}
               headers={[
                 STRINGS.table_header_name_text,
@@ -205,19 +204,19 @@ export const Institutions = () => {
                     </RegisterListTableCol>
                     <RegisterListTableCol>
                       <div className="w-full inline-flex justify-end gap-2">
-                        <Button
+                        {/* <Button
                           label={STRINGS.button_edit_label}
                           colorScheme="gray"
                           variant="outline"
                           size="sm"
-                        />
-                        <Button
+                        /> */}
+                        {/* <Button
                           label={STRINGS.button_remove_label}
                           colorScheme="red"
                           variant="outline"
                           size="sm"
                           icon={TrashIcon}
-                        />
+                        /> */}
                       </div>
                     </RegisterListTableCol>
                   </RegisterListTableRow>

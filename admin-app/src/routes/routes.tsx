@@ -1,6 +1,6 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import {
-  Home, Institutions, Login, NotFound,
+  Home, Institutions, Itineraries, ItinerariesEdit, Login, NotFound,
 } from '../pages'
 import { ProtectedRoute } from './protect-route'
 
@@ -16,6 +16,10 @@ export const routes = {
   },
   itineraries: {
     path: '/roteiros',
+  },
+  itineraries_edit: {
+    getPath: (id: string) => `/roteiros/${id}/editar`,
+    path: '/roteiros/:id/editar',
   },
   login: {
     path: '/login',
@@ -35,12 +39,36 @@ const router = createBrowserRouter([
     path: routes.login.path,
   },
   {
-    element: <ProtectedRoute><Home /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <Home />
+      </ProtectedRoute>
+    ),
     path: routes.home.path,
   },
   {
-    element: <ProtectedRoute><Institutions /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <Institutions />
+      </ProtectedRoute>
+    ),
     path: routes.institutions.path,
+  },
+  {
+    element: (
+      <ProtectedRoute>
+        <Itineraries />
+      </ProtectedRoute>
+    ),
+    path: routes.itineraries.path,
+  },
+  {
+    element: (
+      <ProtectedRoute>
+        <ItinerariesEdit />
+      </ProtectedRoute>
+    ),
+    path: routes.itineraries_edit.path,
   },
 ])
 

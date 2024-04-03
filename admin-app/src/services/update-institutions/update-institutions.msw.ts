@@ -3,7 +3,7 @@ import { HttpResponse, http } from 'msw'
 
 import { variables } from '../../config'
 
-const createInstitutionsData = {
+const updateInstitutionsData = {
   data: {
     active_on_website: false,
     banking_account: {
@@ -23,10 +23,10 @@ const createInstitutionsData = {
   },
 }
 
-export const createInstitutions = http.post(
-  `${variables.API_BASE_URL}admin/institution`,
+export const updateInstitutions = http.post(
+  `${variables.API_BASE_URL}admin/institution/:id`,
   () => HttpResponse.json({
     status: 200,
-    ...createInstitutionsData,
+    ...updateInstitutionsData,
   })
 )

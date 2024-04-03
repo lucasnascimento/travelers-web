@@ -25,15 +25,13 @@ export const Login = () => {
     <main className="h-full p-6 flex items-center justify-center">
       <div className="min-w-96 flex flex-col gap-4">
         {
-          isError
-            ? (
-              <Alert
-                title={COMMON_STRINGS.error_title}
-                description={COMMON_STRINGS.error_description}
-                type="error"
-              />
-            )
-            : <></>
+          isError && (
+            <Alert
+              title={COMMON_STRINGS.error_title}
+              description={COMMON_STRINGS.error_description}
+              type="error"
+            />
+          )
         }
         <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
           <form onSubmit={handleSubmit(handleOnSubmit)}>

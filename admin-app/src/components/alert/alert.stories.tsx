@@ -13,8 +13,8 @@ type Story = StoryObj<typeof meta>
 
 export const Error: Story = {
   args: {
-    title: 'Ocorreu um erro',
     description: 'Talvez você deve tentar mais tarde',
-    type: 'error'
+    title: 'Ocorreu um erro',
+    type: 'error',
   },
 }

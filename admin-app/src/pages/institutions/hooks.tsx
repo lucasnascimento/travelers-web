@@ -14,8 +14,7 @@ import { formTexts } from '../../constants'
 const LIST_INSTITUTIONS_QUERY = 'use_list_institutions'
 
 export const useListInstitutions = () => {
-  const loginData = LocalStorage.loadAccessToken()
-  const accessToken = loginData.access_token
+  const accessToken = LocalStorage.loadAccessToken()
 
   const resultQuery = ReactQuery.useQuery({
     queryFn: () => listInstitutions(accessToken),
@@ -105,8 +104,7 @@ export const useForm = () => {
 const CREATE_INSTITUTIONS_QUERY = 'use_create_institutions'
 
 export const useCreateInstitution = () => {
-  const loginData = LocalStorage.loadAccessToken()
-  const accessToken = loginData.access_token
+  const accessToken = LocalStorage.loadAccessToken()
 
   const resultMutation = ReactQuery.useMutation({
     mutationFn: (payload: any) => (
@@ -121,8 +119,7 @@ export const useCreateInstitution = () => {
 const UPDATE_INSTITUTIONS_QUERY = 'use_update_institutions'
 
 export const useUpdateInstitution = () => {
-  const loginData = LocalStorage.loadAccessToken()
-  const accessToken = loginData.access_token
+  const accessToken = LocalStorage.loadAccessToken()
 
   const resultMutation = ReactQuery.useMutation({
     mutationFn: (data: {

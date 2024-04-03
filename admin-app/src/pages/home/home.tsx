@@ -1,4 +1,5 @@
-import { DashboardWrapper, Stats } from '../../components'
+// import { DashboardWrapper, Stats } from '../../components'
+import { DashboardWrapper } from '../../components'
 
 import { STRINGS } from './strings'
 
@@ -9,7 +10,7 @@ export const Home = () => (
       { title: STRINGS.title },
     ]}
   >
-    <section className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
+    {/* <section className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
       <Stats
         title="Instituições"
         value={17}
@@ -41,6 +42,7 @@ export const Home = () => (
         increasePercent={1.7}
         tooltip="Reservas pendentes na semana"
       />
-    </section>
+    </section> */}
+    <p>Home</p>
   </DashboardWrapper>
 )

@@ -1,6 +1,7 @@
 export const STRINGS = {
   button_edit_label: 'Editar',
   button_remove_label: 'Remover',
+  header_institutions: 'Instituições',
   input_active_label: 'Ativo',
   modal_title: 'Criação de instituição',
   registered_error: 'Erro ao cadastrar instituição',

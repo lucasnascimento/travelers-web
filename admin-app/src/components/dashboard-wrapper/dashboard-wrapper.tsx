@@ -78,37 +78,35 @@ export const DashboardWrapper = ({
             </svg>
           </button>
           {
-            breadcrumbs.length > 1
-              ? (
-                <ol className="ms-3 flex items-center whitespace-nowrap" aria-label="Breadcrumb">
-                  {
-                    breadcrumbs.map((breadcrumb) => {
-                      if (breadcrumb.path) {
-                        return (
-                          <li key={breadcrumb.title} className="flex items-center text-sm text-gray-800 dark:text-gray-400">
-                            <Link
-                              className="flex items-center text-sm text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600 dark:focus:text-blue-500"
-                              to={breadcrumb.path}
-                            >
-                              {breadcrumb.title}
-                            </Link>
-                            <svg className="flex-shrink-0 mx-3 overflow-visible size-2.5 text-gray-400 dark:text-gray-600" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                            </svg>
-                          </li>
-                        )
-                      }
-
+            breadcrumbs.length > 1 && (
+              <ol className="ms-3 flex items-center whitespace-nowrap" aria-label="Breadcrumb">
+                {
+                  breadcrumbs.map((breadcrumb) => {
+                    if (breadcrumb.path) {
                       return (
-                        <li key={breadcrumb.title} className="text-sm font-semibold text-gray-800 truncate dark:text-gray-400" aria-current="page">
-                          {breadcrumb.title}
+                        <li key={breadcrumb.title} className="flex items-center text-sm text-gray-800 dark:text-gray-400">
+                          <Link
+                            className="flex items-center text-sm text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600 dark:focus:text-blue-500"
+                            to={breadcrumb.path}
+                          >
+                            {breadcrumb.title}
+                          </Link>
+                          <svg className="flex-shrink-0 mx-3 overflow-visible size-2.5 text-gray-400 dark:text-gray-600" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                          </svg>
                         </li>
                       )
-                    })
-                  }
-                </ol>
-              )
-              : <></>
+                    }
+
+                    return (
+                      <li key={breadcrumb.title} className="text-sm font-semibold text-gray-800 truncate dark:text-gray-400" aria-current="page">
+                        {breadcrumb.title}
+                      </li>
+                    )
+                  })
+                }
+              </ol>
+            )
           }
         </div>
       </div>
@@ -167,47 +165,43 @@ export const DashboardWrapper = ({
       <div className="w-full pt-10 px-4 sm:px-6 md:px-8 lg:ps-72">
         <header className="mb-8">
           {
-            breadcrumbs.length > 1
-              ? (
-                <ol className="hidden lg:block mb-4 flex items-center whitespace-nowrap" aria-label="Breadcrumb">
-                  {
-                    breadcrumbs.map((breadcrumb) => {
-                      if (!breadcrumb.path) {
-                        return (
-                          <li key={breadcrumb.title} className="inline-flex items-center text-sm font-semibold text-gray-800 truncate dark:text-gray-200" aria-current="page">
-                            {breadcrumb.title}
-                          </li>
-                        )
-                      }
-
+            breadcrumbs.length > 1 && (
+              <ol className="hidden lg:block mb-4 flex items-center whitespace-nowrap" aria-label="Breadcrumb">
+                {
+                  breadcrumbs.map((breadcrumb) => {
+                    if (!breadcrumb.path) {
                       return (
-                        <li key={breadcrumb.title} className="inline-flex items-center">
-                          <Link
-                            to={breadcrumb.path}
-                            className="flex items-center text-sm text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600 dark:focus:text-blue-500"
-                          >
-                            {breadcrumb.title}
-                          </Link>
-                          <svg className="flex-shrink-0 mx-2 overflow-visible size-4 text-gray-400 dark:text-neutral-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                        <li key={breadcrumb.title} className="inline-flex items-center text-sm font-semibold text-gray-800 truncate dark:text-gray-200" aria-current="page">
+                          {breadcrumb.title}
                         </li>
                       )
-                    })
-                  }
-                </ol>
-              )
-              : <></>
+                    }
+
+                    return (
+                      <li key={breadcrumb.title} className="inline-flex items-center">
+                        <Link
+                          to={breadcrumb.path}
+                          className="flex items-center text-sm text-gray-500 hover:text-blue-600 focus:outline-none focus:text-blue-600 dark:focus:text-blue-500"
+                        >
+                          {breadcrumb.title}
+                        </Link>
+                        <svg className="flex-shrink-0 mx-2 overflow-visible size-4 text-gray-400 dark:text-neutral-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                      </li>
+                    )
+                  })
+                }
+              </ol>
+            )
           }
           <h1 className="block text-2xl font-bold text-gray-800 sm:text-3xl dark:text-white">
             {title}
           </h1>
           {
-            description
-              ? (
-                <p className="text-md text-gray-800 dark:text-gray-400">
-                  {description}
-                </p>
-              )
-              : <></>
+            description && (
+              <p className="text-md text-gray-800 dark:text-gray-400">
+                {description}
+              </p>
+            )
           }
         </header>
         {children}

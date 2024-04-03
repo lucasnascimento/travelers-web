@@ -104,7 +104,7 @@ module.exports = {
     "max-len": [
       "error",
       {
-        "code": 80,
+        "code": 130,
         "ignoreComments": true,
         "ignoreRegExpLiterals": true,
         "ignoreStrings": true,
@@ -177,6 +177,7 @@ module.exports = {
       {
         "ignoreDeclarationSort": true
       }
-    ]
+    ],
+    "react/button-has-type": 0,
   }
 }

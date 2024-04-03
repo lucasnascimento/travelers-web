@@ -10,16 +10,16 @@ import { LocalStorage } from '../../utils'
 
 export const useForm = () => {
   const schema = zod.object({
+    password: zod
+      .string({
+        required_error: formTexts.required,
+      })
+      .min(6, { message: formTexts.required }),
     username: zod
       .string({
         required_error: formTexts.required,
       })
       // .email({ message: formTexts.email })
-      .min(6, { message: formTexts.required }),
-    password: zod
-      .string({
-        required_error: formTexts.required,
-      })
       .min(6, { message: formTexts.required }),
   })
 

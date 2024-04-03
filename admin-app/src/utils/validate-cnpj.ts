@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
-export const validateCNPJ = (cnpj: string): boolean => {
-  cnpj = cnpj.replace(/[^\d]/g, '')
+export const validateCNPJ = (rawCnpj: string): boolean => {
+  const cnpj = rawCnpj.replace(/[^\d]/g, '')
 
   if (cnpj.length !== 14) {
     return false

@@ -14,6 +14,7 @@ type Props = {
   mask?: string | (string | RegExp)[]
   maskPlaceholder?: string
   alwaysShowMask?: boolean
+  value?: string | number
 }
 
 export const Input = React.forwardRef<ReactInputMask, Props>(
@@ -42,27 +43,23 @@ export const Input = React.forwardRef<ReactInputMask, Props>(
     return (
       <fieldset className={`flex flex-col ${className}`}>
         {
-          label
-            ? (
-              <label
-                className="mb-2 block text-sm dark:text-white"
-                htmlFor={id}
-              >
-                {label}
-              </label>
-            )
-            : <></>
+          label && (
+            <label
+              className="mb-2 block text-sm dark:text-white"
+              htmlFor={id}
+            >
+              {label}
+            </label>
+          )
         }
 
         <div className="relative">
           {
-            Icon
-              ? (
-                <div className="absolute top-3 left-4">
-                  <Icon className="size-5 text-gray-400" aria-hidden="true" />
-                </div>
-              )
-              : <></>
+            Icon && (
+              <div className="absolute top-3 left-4">
+                <Icon className="size-5 text-gray-400" aria-hidden="true" />
+              </div>
+            )
           }
           {
             mask && (
@@ -78,9 +75,8 @@ export const Input = React.forwardRef<ReactInputMask, Props>(
               />
             )
           }
-
           {
-            !mask && (
+            (!mask && type !== 'date') && (
               <input
                 ref={selectRef as React.RefObject<HTMLInputElement>}
                 className={`${Icon ? 'pl-12' : ''} py-3 px-4 block w-full ${error ? 'border-red-500 dark:border-red-900' : 'border-gray-200 dark:border-gray-700'} rounded-lg text-sm ${error ? 'focus:border-red-500 focus:ring-red-500' : 'focus:border-blue-500 focus:ring-blue-500'} disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:text-gray-400 dark:focus:ring-gray-600`}

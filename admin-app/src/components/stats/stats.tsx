@@ -33,18 +33,16 @@ export const Stats = ({
               { title }
             </p>
             {
-          tooltip
-            ? (
-              <div className="hs-tooltip">
-                <div className="hs-tooltip-toggle">
-                  <InformationCircleIcon className="size-4 text-gray-500" />
-                  <span className="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm dark:bg-slate-700" role="tooltip">
-                    { tooltip }
-                  </span>
-                </div>
+          tooltip && (
+            <div className="hs-tooltip">
+              <div className="hs-tooltip-toggle">
+                <InformationCircleIcon className="size-4 text-gray-500" />
+                <span className="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm dark:bg-slate-700" role="tooltip">
+                  { tooltip }
+                </span>
               </div>
-            )
-            : <></>
+            </div>
+          )
         }
           </div>
 
@@ -55,21 +53,19 @@ export const Stats = ({
               { type === 'percent' ? '%' : '' }
             </h3>
             {
-              increasePercent || decreasePercent
-                ? (
-                  <span className={`flex items-center gap-x-1 ${increasePercent ? 'text-green-600' : 'text-red-600'}`}>
-                    {
-                      increasePercent
-                        ? <ArrowTrendingUpIcon className="size-4" />
-                        : <ArrowTrendingDownIcon className="size-4" />
-                    }
-                    <span className="inline-block text-sm">
-                      { increasePercent || decreasePercent }
-                      %
-                    </span>
+              (increasePercent || decreasePercent) && (
+                <span className={`flex items-center gap-x-1 ${increasePercent ? 'text-green-600' : 'text-red-600'}`}>
+                  {
+                    increasePercent
+                      ? <ArrowTrendingUpIcon className="size-4" />
+                      : <ArrowTrendingDownIcon className="size-4" />
+                  }
+                  <span className="inline-block text-sm">
+                    { increasePercent || decreasePercent }
+                    %
                   </span>
-                )
-                : <></>
+                </span>
+              )
             }
           </div>
         </div>

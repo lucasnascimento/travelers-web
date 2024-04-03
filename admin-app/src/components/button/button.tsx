@@ -66,11 +66,16 @@ export const Button = ({
   const buttonClasses = `${fullWidthClass} ${rawButtonClasses} ${sizesClasses[size]} ${variantClasses} ${disabledClasses} ${className}`
 
   return (
-    <button className={`${buttonClasses}`} type={type} disabled={disabled || loading} {...props}>
-      {!loading && iconPosition === 'left' ? Icon && <Icon className="h-5 w-5" /> : <></>}
+    <button
+      className={`${buttonClasses}`}
+      type={type}
+      disabled={disabled || loading}
+      {...props}
+    >
+      {!loading && iconPosition === 'left' ? Icon && <Icon className="h-5 w-5" /> : null}
       {loading ? <ArrowPathIcon className="h-6 w-6 animate-spin" /> : null}
       {label}
-      {!loading && iconPosition === 'right' ? Icon && <Icon className="h-5 w-5" /> : <></>}
+      {!loading && iconPosition === 'right' ? Icon && <Icon className="h-5 w-5" /> : null}
     </button>
   )
 }

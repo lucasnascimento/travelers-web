@@ -9,7 +9,7 @@ type Props = {
   tip?: string
   className?: string
   options: {
-    value: string
+    value: string | number
     label: string
   }[]
 }
@@ -20,14 +20,14 @@ export const Select = React.forwardRef<HTMLSelectElement, Props>(
   }, ref) => (
     <fieldset className={`flex flex-col ${className}`}>
       <label
-        className="block text-gray-700 text-sm font-bold mb-2"
+        className="mb-2 block text-sm dark:text-white"
         htmlFor={id}
       >
         {label}
       </label>
       <select
         ref={ref}
-        className={`mb-2 shadow appearance-none border ${error ? 'border-red-500' : ''} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
+        className={`py-3 px-4 block w-full ${error ? 'border-red-500 dark:border-red-900' : 'border-gray-200 dark:border-gray-700'} rounded-lg text-sm ${error ? 'focus:border-red-500 focus:ring-red-500' : 'focus:border-blue-500 focus:ring-blue-500'} disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:text-gray-400 dark:focus:ring-gray-600`}
         id={id}
         name={name}
         defaultValue=""
