@@ -1,12 +1,30 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import {
-  Home, Institutions, Itineraries, ItinerariesEdit, Login, NotFound,
+  Groups,
+  GroupsCreate,
+  GroupsEdit,
+  Home,
+  Institutions,
+  Itineraries,
+  ItinerariesEdit,
+  Login,
+  NotFound,
 } from '../pages'
 import { ProtectedRoute } from './protect-route'
 
 export const routes = {
   finances: {
     path: '/financas',
+  },
+  groups: {
+    path: '/grupos',
+  },
+  groupsCreate: {
+    path: '/grupos/criar',
+  },
+  groupsEdit: {
+    getPath: (id: string) => `/grupos/${id}/editar`,
+    path: '/grupos/:id/editar',
   },
   home: {
     path: '/',
@@ -17,7 +35,7 @@ export const routes = {
   itineraries: {
     path: '/roteiros',
   },
-  itineraries_edit: {
+  itinerariesEdit: {
     getPath: (id: string) => `/roteiros/${id}/editar`,
     path: '/roteiros/:id/editar',
   },
@@ -68,7 +86,31 @@ const router = createBrowserRouter([
         <ItinerariesEdit />
       </ProtectedRoute>
     ),
-    path: routes.itineraries_edit.path,
+    path: routes.itinerariesEdit.path,
+  },
+  {
+    element: (
+      <ProtectedRoute>
+        <Groups />
+      </ProtectedRoute>
+    ),
+    path: routes.groups.path,
+  },
+  {
+    element: (
+      <ProtectedRoute>
+        <GroupsCreate />
+      </ProtectedRoute>
+    ),
+    path: routes.groupsCreate.path,
+  },
+  {
+    element: (
+      <ProtectedRoute>
+        <GroupsEdit />
+      </ProtectedRoute>
+    ),
+    path: routes.groupsEdit.path,
   },
 ])
 

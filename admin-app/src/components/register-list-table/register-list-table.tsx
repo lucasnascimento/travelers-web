@@ -4,7 +4,7 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   // MagnifyingGlassIcon,
-  // PlusIcon,
+  PlusIcon,
 } from '@heroicons/react/24/outline'
 
 import { Button } from '../button'
@@ -15,7 +15,7 @@ import { STRINGS } from './strings'
 export type Props = {
   children: React.ReactNode
   // onSearch: (search: string) => void
-  // onClickCreate: () => void
+  onClickCreate?: () => void
   headers: string[]
   onNext?: () => void
   onPrevious?: () => void
@@ -27,7 +27,7 @@ export const RegisterListTable = ({
   children,
   headers,
   loading = false,
-  // onClickCreate,
+  onClickCreate,
   onNext,
   onPrevious,
   // onSearch,
@@ -50,8 +50,8 @@ export const RegisterListTable = ({
       )
       : (
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-gray-700">
-          {/* <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b border-gray-200 dark:border-gray-700">
-            <div className="inline-flex gap-x-2">
+          <div className="px-6 py-4 grid gap-3 md:flex md:justify-end md:items-center border-b border-gray-200 dark:border-gray-700">
+            {/* <div className="inline-flex gap-x-2">
               <Input
                 placeholder={STRINGS.input_search_placeholder}
                 icon={MagnifyingGlassIcon}
@@ -64,11 +64,15 @@ export const RegisterListTable = ({
                 variant="outline"
                 onClick={handleOnSearch}
               />
-            </div>
-            <div className="inline-flex gap-x-2">
-              <Button label={STRINGS.button_create_label} icon={PlusIcon} size="sm" onClick={onClickCreate} />
-            </div>
-          </div> */}
+            </div> */}
+            {
+              onClickCreate && (
+                <div className="inline-flex gap-x-2">
+                  <Button label={STRINGS.button_create_label} icon={PlusIcon} size="sm" onClick={onClickCreate} />
+                </div>
+              )
+            }
+          </div>
 
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-slate-800">

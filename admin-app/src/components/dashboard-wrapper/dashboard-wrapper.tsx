@@ -7,6 +7,7 @@ import {
   MapPinIcon,
   MoonIcon,
   SunIcon,
+  UserGroupIcon,
 } from '@heroicons/react/24/outline'
 
 import { Button } from '..'
@@ -147,6 +148,16 @@ export const DashboardWrapper = ({
               >
                 <MapPinIcon className="size-4" />
                 Roteiros
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                className={`flex items-center gap-x-3.5 py-2 px-2.5 ${highlightActiveMenuItem(routes.groups.path) ? 'bg-gray-100 dark:bg-gray-900' : ''} text-sm text-slate-700 rounded-lg hover:bg-gray-100 dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 dark:hover:bg-gray-900`}
+                to={routes.groups.path}
+              >
+                <UserGroupIcon className="size-4" />
+                Grupos
               </Link>
             </li>
 
