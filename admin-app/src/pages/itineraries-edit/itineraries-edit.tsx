@@ -188,8 +188,6 @@ export const ItinerariesEdit = () => {
     : []
   const hasSecondRule = dataItinerariesRules?.data?.[1]
 
-  console.log('errors -> ', errors)
-
   return (
     <DashboardWrapper
       title={STRINGS.title}

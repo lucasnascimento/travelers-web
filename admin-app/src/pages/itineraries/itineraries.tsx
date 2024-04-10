@@ -73,7 +73,7 @@ export const Itineraries = () => {
   // }
 
   const handleOnClickEdit = (id: string) => (
-    navigate(routes.itineraries_edit.getPath(id))
+    navigate(routes.itinerariesEdit.getPath(id))
   )
 
   React.useEffect(() => {
