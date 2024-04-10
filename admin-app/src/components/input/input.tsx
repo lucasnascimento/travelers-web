@@ -9,7 +9,7 @@ type Props = {
   label?: string
   icon?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
   error?: string
-  tip?: string
+  tip?: string | number
   className?: string
   mask?: string | (string | RegExp)[]
   maskPlaceholder?: string

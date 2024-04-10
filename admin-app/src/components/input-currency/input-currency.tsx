@@ -2,14 +2,15 @@ import * as React from 'react'
 import CurrencyInput, { CurrencyInputProps } from 'react-currency-input-field'
 
 type Props = {
-  id: string
-  name: string
   placeholder: string
+  id?: string
+  name?: string
   label?: string
   error?: string
   tip?: string
   value?: string | number
   defaultValue?: string | number
+  disabled?: boolean
 }
 
 export const InputCurrency = React.forwardRef<CurrencyInputProps, Props>(

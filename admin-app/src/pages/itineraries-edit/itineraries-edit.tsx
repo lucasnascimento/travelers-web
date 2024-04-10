@@ -90,6 +90,16 @@ const installments = [
   },
 ]
 
+const calculateDiscountInReals = (rawAmount: string, rawPercentage: string) => {
+  const amount = rawAmount
+    ? Number(rawAmount.replace('R$ ', '').replace('.', '').replace(',', '.'))
+    : 0
+  const percentage = rawPercentage ? Number(rawPercentage.replace('%', '').replace('_', '')) : 0
+  const discount = amount * (percentage / 100)
+
+  return discount
+}
+
 export const ItinerariesEdit = () => {
   const [isLoading, setIsLoading] = React.useState(false)
   const { id } = useParams()
@@ -124,13 +134,29 @@ export const ItinerariesEdit = () => {
     handleSubmit,
     register,
     reset,
+    watch,
   } = useForm()
   const navigate = useNavigate()
+  const firstAmount = watch('rules.0.seat_price')
+  const secondAmount = watch('rules.1.seat_price')
+  const firstDiscountPercentage = watch('rules.0.pix_discount')
+  const secondDiscountPercentage = watch('rules.1.pix_discount')
+  const firstDiscountAmount = calculateDiscountInReals(firstAmount, firstDiscountPercentage)
+  const secondDiscountAmount = calculateDiscountInReals(secondAmount, secondDiscountPercentage)
 
   React.useEffect(() => {
+    const formatedRules = dataItinerariesRules?.data?.map((rule) => {
+      const pixDiscount = Number(rule.pix_discount) * 100
+
+      return {
+        ...rule,
+        pix_discount: `${pixDiscount}`,
+      }
+    })
+
     reset({
       ...(dataItinerary?.data || {}),
-      rules: [...(dataItinerariesRules?.data || [])],
+      rules: [...(formatedRules || [])],
     })
   }, [dataItinerary?.data, dataItinerariesRules?.data])
 
@@ -146,7 +172,7 @@ export const ItinerariesEdit = () => {
     }
     const rulesData = rawRules.map((rule: any) => ({
       ...rule,
-      pix_discount: rule.pix_discount.replace('%', ''),
+      pix_discount: Number(rule.pix_discount.replace('%', '')) / 100,
       purchase_deadline: formatDateAmerican(rule.purchase_deadline),
       seat_price: rule.seat_price.replace('R$ ', '').replace('.', '').replace(',', '.'),
     }))
@@ -327,10 +353,10 @@ export const ItinerariesEdit = () => {
                           <Input
                             id="rules.0.pix_discount"
                             label={
-                              STRINGS.form_input_first_subscription_value_with_discount_label
+                              STRINGS.form_input_first_subscription_percentage_discount_label
                             }
                             placeholder={
-                              STRINGS.form_input_first_subscription_value_with_discount_placeholder
+                              STRINGS.form_input_first_subscription_percentage_discount_placeholder
                             }
                             type="text"
                             mask="99.99%"
@@ -339,6 +365,12 @@ export const ItinerariesEdit = () => {
                             {...rest}
                           />
                         )}
+                      />
+                      <InputCurrency
+                        label={STRINGS.form_input_first_subscription_amount_with_discount_label}
+                        placeholder={STRINGS.form_input_first_subscription_percentage_discount_placeholder}
+                        value={Number(firstAmount) - firstDiscountAmount}
+                        disabled
                       />
                       <Select
                         id="rules.0.installments"
@@ -398,10 +430,10 @@ export const ItinerariesEdit = () => {
                             <Input
                               id="rules.1.pix_discount"
                               label={
-                              STRINGS.form_input_second_subscription_value_with_discount_label
+                              STRINGS.form_input_second_subscription_percentage_discount_label
                             }
                               placeholder={
-                              STRINGS.form_input_second_subscription_value_with_discount_placeholder
+                              STRINGS.form_input_second_subscription_percentage_discount_placeholder
                             }
                               type="text"
                               mask="99.99%"
@@ -410,6 +442,12 @@ export const ItinerariesEdit = () => {
                               {...rest}
                             />
                           )}
+                        />
+                        <InputCurrency
+                          label={STRINGS.form_input_second_subscription_amount_with_discount_label}
+                          placeholder={STRINGS.form_input_second_subscription_percentage_discount_placeholder}
+                          value={Number(secondAmount) - secondDiscountAmount}
+                          disabled
                         />
                         <Select
                           id="rules.1.installments"
