@@ -143,6 +143,8 @@ export const ItinerariesEdit = () => {
   const secondDiscountPercentage = watch('rules.1.pix_discount')
   const firstDiscountAmount = calculateDiscountInReals(firstAmount, firstDiscountPercentage)
   const secondDiscountAmount = calculateDiscountInReals(secondAmount, secondDiscountPercentage)
+  const firstAmountWithDiscount = (Number(firstAmount) - firstDiscountAmount).toFixed(2)
+  const secondAmountWithDiscount = (Number(secondAmount) - secondDiscountAmount).toFixed(2)
 
   React.useEffect(() => {
     const formatedRules = dataItinerariesRules?.data?.map((rule) => {
@@ -369,7 +371,7 @@ export const ItinerariesEdit = () => {
                       <InputCurrency
                         label={STRINGS.form_input_first_subscription_amount_with_discount_label}
                         placeholder={STRINGS.form_input_first_subscription_percentage_discount_placeholder}
-                        value={Number(firstAmount) - firstDiscountAmount}
+                        value={firstAmountWithDiscount}
                         disabled
                       />
                       <Select
@@ -446,7 +448,7 @@ export const ItinerariesEdit = () => {
                         <InputCurrency
                           label={STRINGS.form_input_second_subscription_amount_with_discount_label}
                           placeholder={STRINGS.form_input_second_subscription_percentage_discount_placeholder}
-                          value={Number(secondAmount) - secondDiscountAmount}
+                          value={secondAmountWithDiscount}
                           disabled
                         />
                         <Select
