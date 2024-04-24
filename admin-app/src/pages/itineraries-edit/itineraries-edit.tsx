@@ -90,10 +90,9 @@ const installments = [
   },
 ]
 
+const cleanCurrency = (rawAmount: string) => Number(rawAmount.replace('R$ ', '').replace('.', '').replace(',', '.'))
 const calculateDiscountInReals = (rawAmount: string, rawPercentage: string) => {
-  const amount = rawAmount
-    ? Number(rawAmount.replace('R$ ', '').replace('.', '').replace(',', '.'))
-    : 0
+  const amount = rawAmount ? cleanCurrency(rawAmount) : 0
   const percentage = rawPercentage ? Number(rawPercentage.replace('%', '').replace('_', '')) : 0
   const discount = amount * (percentage / 100)
 
@@ -137,14 +136,14 @@ export const ItinerariesEdit = () => {
     watch,
   } = useForm()
   const navigate = useNavigate()
-  const firstAmount = watch('rules.0.seat_price')
-  const secondAmount = watch('rules.1.seat_price')
-  const firstDiscountPercentage = watch('rules.0.pix_discount')
-  const secondDiscountPercentage = watch('rules.1.pix_discount')
+  const firstAmount = watch('rules.0.seat_price') || ''
+  const secondAmount = watch('rules.1.seat_price') || ''
+  const firstDiscountPercentage = watch('rules.0.pix_discount') || ''
+  const secondDiscountPercentage = watch('rules.1.pix_discount') || ''
   const firstDiscountAmount = calculateDiscountInReals(firstAmount, firstDiscountPercentage)
   const secondDiscountAmount = calculateDiscountInReals(secondAmount, secondDiscountPercentage)
-  const firstAmountWithDiscount = (Number(firstAmount) - firstDiscountAmount).toFixed(2)
-  const secondAmountWithDiscount = (Number(secondAmount) - secondDiscountAmount).toFixed(2)
+  const firstAmountWithDiscount = (cleanCurrency(firstAmount) - firstDiscountAmount).toFixed(2)
+  const secondAmountWithDiscount = (cleanCurrency(secondAmount) - secondDiscountAmount).toFixed(2)
 
   React.useEffect(() => {
     const formatedRules = dataItinerariesRules?.data?.map((rule) => {

@@ -1,0 +1,20 @@
+import type {
+  CreateItinerariesRequest,
+  CreateItinerariesResponse,
+} from '../../types'
+import { request } from '../base'
+import { variables } from '../../config'
+
+export const createItineraries = (
+  accessToken: string,
+  payload: CreateItinerariesRequest
+): Promise<CreateItinerariesResponse> => request(
+  `${variables.API_BASE_URL}admin/itinerary`,
+  {
+    body: JSON.stringify(payload),
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    method: 'POST',
+  }
+)

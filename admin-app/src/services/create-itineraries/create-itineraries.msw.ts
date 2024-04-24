@@ -3,7 +3,7 @@ import { HttpResponse, http } from 'msw'
 
 import { variables } from '../../config'
 
-const updateItinerariesData = {
+const createItinerariesData = {
   data: {
     boarding_date: '2024-06-12',
     cancelation_rules: '<p></b>DESISTÊNCIAS, TRANSFERÊNCIAS E CANCELAMENTOS</b></p>\n<p>No caso de desistência ou cancelamento do Estudo do Meio por parte DO ALUNO, a Terra Nativa Ecoturismo efetuará a devolução </p>dos percentuais descritos no item abaixo, incidentes sobre o valor total do pacote, no prazo de 30 dias, contados da solicitação por escrito.</p>\n<p>Período <b>Valor do Reembolso</b></p>\n<p>a) Até 31 dias da data do Estudo do Meio <b>90% (noventa por cento)</b></p>\n<p>b) Entre 21 a 30 dias da data do Estudo do Meio <b>80% (oitenta por cento)</b></p>\n<p>c) Entre 07 a 20 dias da data do Estudo do Meio <b>50% (cinquenta por cento)</b></p>\n<p>d) Menos de 07 dias da data do Estudo do Meio <b>Não há reembolso.</b></p>\n<p>Caso o aluno ou outro participante abandone o Estudo do Meio por conta própria, após o mesmo haver sido iniciado, o aluno assume todos os riscos e encargos decorrentes, sem direito a qualquer reembolso e/ou restituição, a qualquer título, ficando ainda responsável por todas as consequências da decisão destes.</p>',
@@ -77,10 +77,10 @@ const updateItinerariesData = {
   },
 }
 
-export const updateItineraries = http.put(
-  `${variables.API_BASE_URL}admin/itinerary/:id`,
+export const updateItineraries = http.post(
+  `${variables.API_BASE_URL}admin/itinerary`,
   () => HttpResponse.json({
     status: 200,
-    ...updateItinerariesData,
+    ...createItinerariesData,
   })
 )

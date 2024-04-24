@@ -102,3 +102,22 @@ export type ListItineraryRuleResponse = {
     updated_at: string
   }[]
 }
+
+export type CreateItinerariesRequest = {
+  institution_id: string
+  title: string
+  boarding_date: string
+  landing_date: string
+  seats: number
+  sold_seats: number
+  purchase_deadline: string
+  installments: number
+  details: string
+  summary: string
+  services: string
+  terms_and_conditions: string
+}
+
+export type CreateItinerariesResponse = {
+  data: Itinerary
+}

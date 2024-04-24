@@ -6,6 +6,7 @@ import {
   Home,
   Institutions,
   Itineraries,
+  ItinerariesCreate,
   ItinerariesEdit,
   Login,
   NotFound,
@@ -34,6 +35,9 @@ export const routes = {
   },
   itineraries: {
     path: '/roteiros',
+  },
+  itinerariesCreate: {
+    path: '/roteiros/criar',
   },
   itinerariesEdit: {
     getPath: (id: string) => `/roteiros/${id}/editar`,
@@ -79,6 +83,14 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     path: routes.itineraries.path,
+  },
+  {
+    element: (
+      <ProtectedRoute>
+        <ItinerariesCreate />
+      </ProtectedRoute>
+    ),
+    path: routes.itinerariesCreate.path,
   },
   {
     element: (
