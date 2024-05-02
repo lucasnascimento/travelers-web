@@ -245,7 +245,7 @@ const MenuBar = () => {
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
-  TextStyle.configure({ types: [ListItem.name] }),
+  // TextStyle.configure({ types: [ListItem.name] }),
   StarterKit.configure({
     bulletList: {
       keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
