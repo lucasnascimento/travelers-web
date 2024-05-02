@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import { EditorProvider, useCurrentEditor } from '@tiptap/react'
 import { Color } from '@tiptap/extension-color'
 import ListItem from '@tiptap/extension-list-item'
@@ -247,38 +248,43 @@ const extensions = [
   TextStyle.configure({ types: [ListItem.name] }),
   StarterKit.configure({
     bulletList: {
-      keepMarks: true,
       keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+      keepMarks: true,
     },
     orderedList: {
-      keepMarks: true,
       keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+      keepMarks: true,
     },
   }),
 ]
 
-const content = '<p>Coloque seu texto aqui</p>'
+const emptyContent = '<p>Coloque seu texto aqui</p>'
 
 export type Props = {
-  label?: string
+  content?: string
   error?: string
+  label?: string
+  onChange: (value: string) => void
   tip?: string | number
 }
 
 export const RichTextEditor = ({
+  content,
   error,
   label,
+  onChange,
   tip,
 }: Props) => (
   <div className="flex flex-col">
     <label className="mb-2 block text-sm dark:text-white">
       {label}
     </label>
-    <div className="[&>div]:mt-4 [&>div>div]:border [&>div>div]:rounded-lg [&>div>div]:py-3 [&>div>div]:px-4">
+    <div className="[&>div>div]:max-h-64 [&>div>div]:overflow-y-scroll [&>div]:mt-4 [&>div>div]:border [&>div>div]:rounded-lg [&>div>div]:py-3 [&>div>div]:px-4 [&>div>div]:text-gray-600 [&>div>div]:dark:text-gray-200">
       <EditorProvider
         slotBefore={<MenuBar />}
         extensions={extensions}
-        content={content}
+        content={content || emptyContent}
+        onUpdate={(event) => onChange(event.editor.getHTML())}
       >
         <span />
       </EditorProvider>

@@ -272,10 +272,69 @@ export const ItinerariesCreate = () => {
                   {...register('seats')}
                 />
               </div>
-              <RichTextEditor
-                label={STRINGS.form_input_details_label}
-                error={errors.details?.message}
-                {...register('details')}
+              <div className="grid md:grid-cols-2 gap-4">
+                <Controller
+                  name="details"
+                  control={control}
+                  render={({ field: { onChange, ...rest } }) => (
+                    <RichTextEditor
+                      label={STRINGS.form_input_details_label}
+                      error={errors.details?.message}
+                      onChange={(event) => onChange({ target: { value: event } })}
+                      {...rest}
+                    />
+                  )}
+                />
+                <Controller
+                  name="summary"
+                  control={control}
+                  render={({ field: { onChange, ...rest } }) => (
+                    <RichTextEditor
+                      label={STRINGS.form_input_summary_label}
+                      error={errors.summary?.message}
+                      onChange={(event) => onChange({ target: { value: event } })}
+                      {...rest}
+                    />
+                  )}
+                />
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <Controller
+                  name="services"
+                  control={control}
+                  render={({ field: { onChange, ...rest } }) => (
+                    <RichTextEditor
+                      label={STRINGS.form_input_services_label}
+                      error={errors.services?.message}
+                      onChange={(event) => onChange({ target: { value: event } })}
+                      {...rest}
+                    />
+                  )}
+                />
+                <Controller
+                  name="terms_and_conditions"
+                  control={control}
+                  render={({ field: { onChange, ...rest } }) => (
+                    <RichTextEditor
+                      label={STRINGS.form_input_terms_and_conditions_label}
+                      error={errors.terms_and_conditions?.message}
+                      onChange={(event) => onChange({ target: { value: event } })}
+                      {...rest}
+                    />
+                  )}
+                />
+              </div>
+              <Controller
+                name="cancelation_rules"
+                control={control}
+                render={({ field: { onChange, ...rest } }) => (
+                  <RichTextEditor
+                    label={STRINGS.form_input_cancelation_rules_label}
+                    error={errors.cancelation_rules?.message}
+                    onChange={(event) => onChange({ target: { value: event } })}
+                    {...rest}
+                  />
+                )}
               />
             </div>
           </Card>

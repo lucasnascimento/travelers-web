@@ -1,5 +1,6 @@
 import * as ReactQuery from '@tanstack/react-query'
 import { z as zod } from 'zod'
+import striptags from 'striptags'
 
 import {
   getItinerary, listGroups, listItinerariesRules, updateItineraries, updateItinerariesRule,
@@ -50,6 +51,22 @@ export const useListGroups = () => {
 export const useForm = () => {
   const schema = zod.object({
     boarding_date: zod.union([zod.string(), zod.date()]),
+    cancelation_rules: zod
+      .string({
+        required_error: formTexts.required,
+      })
+      .refine((data) => {
+        const strippedString = striptags(data)
+        return strippedString.trim().length > 0
+      }, { message: formTexts.required }),
+    details: zod
+      .string({
+        required_error: formTexts.required,
+      })
+      .refine((data) => {
+        const strippedString = striptags(data)
+        return strippedString.trim().length > 0
+      }, { message: formTexts.required }),
     group_id: zod
       .string({
         required_error: formTexts.required,
@@ -66,6 +83,30 @@ export const useForm = () => {
       message: formTexts.required,
     }),
     seats: zod.union([zod.string(), zod.number()]),
+    services: zod
+      .string({
+        required_error: formTexts.required,
+      })
+      .refine((data) => {
+        const strippedString = striptags(data)
+        return strippedString.trim().length > 0
+      }, { message: formTexts.required }),
+    summary: zod
+      .string({
+        required_error: formTexts.required,
+      })
+      .refine((data) => {
+        const strippedString = striptags(data)
+        return strippedString.trim().length > 0
+      }, { message: formTexts.required }),
+    terms_and_conditions: zod
+      .string({
+        required_error: formTexts.required,
+      })
+      .refine((data) => {
+        const strippedString = striptags(data)
+        return strippedString.trim().length > 0
+      }, { message: formTexts.required }),
     title: zod
       .string({
         required_error: formTexts.required,

@@ -1,5 +1,6 @@
 import * as ReactQuery from '@tanstack/react-query'
 import { z as zod } from 'zod'
+import striptags from 'striptags'
 
 import { createItineraries, createItinerariesRule, listGroups } from '../../services'
 import { LocalStorage } from '../../utils/local-storage'
@@ -30,11 +31,22 @@ export const useForm = () => {
           required_error: formTexts.required,
         }),
       ]),
+    cancelation_rules: zod
+      .string({
+        required_error: formTexts.required,
+      })
+      .refine((data) => {
+        const strippedString = striptags(data)
+        return strippedString.trim().length > 0
+      }, { message: formTexts.required }),
     details: zod
       .string({
         required_error: formTexts.required,
       })
-      .min(2, { message: formTexts.required }),
+      .refine((data) => {
+        const strippedString = striptags(data)
+        return strippedString.trim().length > 0
+      }, { message: formTexts.required }),
     group_id: zod
       .string({
         required_error: formTexts.required,
@@ -106,6 +118,30 @@ export const useForm = () => {
           })
           .min(1, { message: formTexts.required }),
       ]),
+    services: zod
+      .string({
+        required_error: formTexts.required,
+      })
+      .refine((data) => {
+        const strippedString = striptags(data)
+        return strippedString.trim().length > 0
+      }, { message: formTexts.required }),
+    summary: zod
+      .string({
+        required_error: formTexts.required,
+      })
+      .refine((data) => {
+        const strippedString = striptags(data)
+        return strippedString.trim().length > 0
+      }, { message: formTexts.required }),
+    terms_and_conditions: zod
+      .string({
+        required_error: formTexts.required,
+      })
+      .refine((data) => {
+        const strippedString = striptags(data)
+        return strippedString.trim().length > 0
+      }, { message: formTexts.required }),
     title: zod
       .string({
         required_error: formTexts.required,

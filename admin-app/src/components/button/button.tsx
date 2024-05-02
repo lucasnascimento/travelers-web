@@ -11,7 +11,7 @@ export type Props = {
   highlighted?: boolean
   icon?: React.ForwardRefExoticComponent<Omit<React.SVGProps<SVGSVGElement>, 'ref'> & { title?: string | undefined; titleId?: string | undefined; } & React.RefAttributes<SVGSVGElement>>
   iconPosition?: 'left' | 'right'
-  label: string
+  label?: string
   loading?: boolean
   onClick?: () => void
 }
@@ -74,7 +74,7 @@ export const Button = ({
     >
       {!loading && iconPosition === 'left' ? Icon && <Icon className="h-5 w-5" /> : null}
       {loading ? <ArrowPathIcon className="h-6 w-6 animate-spin" /> : null}
-      {label}
+      {label || ''}
       {!loading && iconPosition === 'right' ? Icon && <Icon className="h-5 w-5" /> : null}
     </button>
   )

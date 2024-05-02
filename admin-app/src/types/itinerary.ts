@@ -77,6 +77,15 @@ export type ListItinerariesResponse = {
 export type UpdateItinerariesRequest = {
   is_deleted?: boolean
   status?: 'booking_closed' | 'booking_opened' | 'sold_out'
+  title?: string
+  boarding_date?: string
+  landing_date?: string
+  seats?: number
+  purchase_deadline?: string
+  details?: string
+  summary?: string
+  services?: string
+  terms_and_conditions?: string
 }
 
 export type UpdateItinerariesResponse = {
