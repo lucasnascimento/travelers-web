@@ -10,13 +10,15 @@ import {
   Input,
   InputCurrency,
   InputDate,
+  RichTextEditor,
   Select,
 } from '../../components'
-import { formatDateAmerican } from '../../utils'
+import { formatDateAmerican, scrollToTop } from '../../utils'
 
 import { STRINGS } from './strings'
 import {
-  useForm,
+  useFormItinerary,
+  useFormItineraryRules,
   useGetItinerary,
   useListGroups,
   useListItinerariesRules,
@@ -90,10 +92,9 @@ const installments = [
   },
 ]
 
+const cleanCurrency = (rawAmount: string) => Number(rawAmount.replace('R$ ', '').replace('.', '').replace(',', '.'))
 const calculateDiscountInReals = (rawAmount: string, rawPercentage: string) => {
-  const amount = rawAmount
-    ? Number(rawAmount.replace('R$ ', '').replace('.', '').replace(',', '.'))
-    : 0
+  const amount = rawAmount ? cleanCurrency(rawAmount) : 0
   const percentage = rawPercentage ? Number(rawPercentage.replace('%', '').replace('_', '')) : 0
   const discount = amount * (percentage / 100)
 
@@ -102,6 +103,7 @@ const calculateDiscountInReals = (rawAmount: string, rawPercentage: string) => {
 
 export const ItinerariesEdit = () => {
   const [isLoading, setIsLoading] = React.useState(false)
+  const navigate = useNavigate()
   const { id } = useParams()
   const [updatedWithSuccess, setUpdatedWithSuccess] = React.useState(false)
   const {
@@ -129,20 +131,28 @@ export const ItinerariesEdit = () => {
   } = useUpdateItinerariesRule()
 
   const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    register,
-    reset,
-    watch,
-  } = useForm()
-  const navigate = useNavigate()
-  const firstAmount = watch('rules.0.seat_price')
-  const secondAmount = watch('rules.1.seat_price')
-  const firstDiscountPercentage = watch('rules.0.pix_discount')
-  const secondDiscountPercentage = watch('rules.1.pix_discount')
+    control: controlItinerary,
+    formState: { errors: errorsItinerary },
+    handleSubmit: handleSubmitItinerary,
+    register: registerItinerary,
+    reset: resetItinerary,
+  } = useFormItinerary()
+  const {
+    control: controlItineraryRules,
+    formState: { errors: errorsItineraryRules },
+    handleSubmit: handleSubmitItineraryRules,
+    register: registerItineraryRules,
+    reset: resetItineraryRules,
+    watch: watchItineraryRules,
+  } = useFormItineraryRules()
+  const firstAmount = watchItineraryRules('rules.0.seat_price') || ''
+  const secondAmount = watchItineraryRules('rules.1.seat_price') || ''
+  const firstDiscountPercentage = watchItineraryRules('rules.0.pix_discount') || ''
+  const secondDiscountPercentage = watchItineraryRules('rules.1.pix_discount') || ''
   const firstDiscountAmount = calculateDiscountInReals(firstAmount, firstDiscountPercentage)
   const secondDiscountAmount = calculateDiscountInReals(secondAmount, secondDiscountPercentage)
+  const firstAmountWithDiscount = (cleanCurrency(firstAmount) - firstDiscountAmount).toFixed(2)
+  const secondAmountWithDiscount = (cleanCurrency(secondAmount) - secondDiscountAmount).toFixed(2)
 
   React.useEffect(() => {
     const formatedRules = dataItinerariesRules?.data?.map((rule) => {
@@ -154,23 +164,46 @@ export const ItinerariesEdit = () => {
       }
     })
 
-    reset({
-      ...(dataItinerary?.data || {}),
+    resetItineraryRules({
       rules: [...(formatedRules || [])],
     })
-  }, [dataItinerary?.data, dataItinerariesRules?.data])
+  }, [dataItinerariesRules?.data])
+
+  React.useEffect(() => {
+    resetItinerary({
+      ...(dataItinerary?.data || {}),
+    })
+  }, [dataItinerary?.data])
 
   const handleOnCancel = () => navigate(-1)
-  const handleOnSubmit = async (rawData: any) => {
+  const handleOnSubmitItinerary = async (rawData: any) => {
     setIsLoading(true)
 
-    const { rules: rawRules, ...restRawData } = rawData
     const itineraryData = {
-      ...restRawData,
-      boarding_date: formatDateAmerican(restRawData.boarding_date),
-      landing_date: formatDateAmerican(restRawData.landing_date),
+      ...rawData,
+      boarding_date: formatDateAmerican(rawData.boarding_date),
+      landing_date: formatDateAmerican(rawData.landing_date),
     }
-    const rulesData = rawRules.map((rule: any) => ({
+
+    try {
+      await mutateAsyncUpdateItineraries({
+        id: id || '',
+        payload: itineraryData,
+      })
+
+      setUpdatedWithSuccess(true)
+    } catch (err) {
+      setUpdatedWithSuccess(false)
+    }
+
+    scrollToTop()
+    setIsLoading(false)
+  }
+
+  const handleOnSubmitItineraryRules = async (rawData: any) => {
+    setIsLoading(true)
+
+    const rulesData = rawData.rules.map((rule: any) => ({
       ...rule,
       pix_discount: Number(rule.pix_discount.replace('%', '')) / 100,
       purchase_deadline: formatDateAmerican(rule.purchase_deadline),
@@ -178,10 +211,6 @@ export const ItinerariesEdit = () => {
     }))
 
     try {
-      await mutateAsyncUpdateItineraries({
-        id: id || '',
-        payload: itineraryData,
-      })
       await mutateAsyncUpdateItinerariesRule({
         itineraryId: id || '',
         payload: rulesData[0],
@@ -201,6 +230,7 @@ export const ItinerariesEdit = () => {
       setUpdatedWithSuccess(false)
     }
 
+    scrollToTop()
     setIsLoading(false)
   }
 
@@ -235,179 +265,245 @@ export const ItinerariesEdit = () => {
           && !isFetchingItinerariesRules
           && dataItinerary
           && dataItinerariesRules && (
-            <form
-              className="flex flex-col gap-8"
-              onSubmit={handleSubmit(handleOnSubmit)}
-            >
-              <Card>
-                <div className="p-4 flex flex-col gap-4">
-                  <h2 className="font-semibold text-xl mb-2 dark:text-white">
-                    {STRINGS.section_geral_data_title}
-                  </h2>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <Input
-                      id="title"
-                      label={STRINGS.form_input_itinerary_name_label}
-                      placeholder={
-                        STRINGS.form_input_itinerary_name_placeholder
-                      }
-                      type="text"
-                      error={errors.title?.message}
-                      {...register('title')}
-                    />
-                    <Select
-                      id="group_id"
-                      label={STRINGS.form_input_group_name_label}
-                      placeholder={STRINGS.form_input_group_name_placeholder}
-                      options={groups}
-                      error={errors.group_id?.message}
-                      {...register('group_id')}
-                    />
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <Controller
-                      name="boarding_date"
-                      control={control}
-                      render={({ field: { value, ...rest } }) => (
-                        <InputDate
-                          id="boarding_date"
-                          label={STRINGS.form_input_board_date_label}
-                          value={value ? getCorrectDate(value) : new Date()}
-                          error={errors.boarding_date?.message}
-                          {...rest}
-                        />
-                      )}
-                    />
-                    <Controller
-                      name="landing_date"
-                      control={control}
-                      render={({ field: { value, ...rest } }) => (
-                        <InputDate
-                          id="landing_date"
-                          label={STRINGS.form_input_landing_date_label}
-                          value={value ? getCorrectDate(value) : new Date()}
-                          error={errors.landing_date?.message}
-                          {...rest}
-                        />
-                      )}
-                    />
-                  </div>
-                  <div>
+            <div className="flex flex-col gap-12">
+              <form
+                className="flex flex-col gap-4"
+                onSubmit={handleSubmitItinerary(handleOnSubmitItinerary)}
+              >
+                <Card>
+                  <div className="p-4 flex flex-col gap-4">
+                    <h2 className="font-semibold text-xl mb-2 dark:text-white">
+                      {STRINGS.section_geral_data_title}
+                    </h2>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <Input
+                        id="title"
+                        label={STRINGS.form_input_itinerary_name_label}
+                        placeholder={
+                          STRINGS.form_input_itinerary_name_placeholder
+                        }
+                        type="text"
+                        error={errorsItinerary.title?.message}
+                        {...registerItinerary('title')}
+                      />
+                      <Select
+                        id="group_id"
+                        label={STRINGS.form_input_group_name_label}
+                        placeholder={STRINGS.form_input_group_name_placeholder}
+                        options={groups}
+                        error={errorsItinerary.group_id?.message}
+                        {...registerItinerary('group_id')}
+                      />
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <Controller
+                        name="boarding_date"
+                        control={controlItinerary}
+                        render={({ field: { value, ...rest } }) => (
+                          <InputDate
+                            id="boarding_date"
+                            label={STRINGS.form_input_board_date_label}
+                            value={value ? getCorrectDate(value) : new Date()}
+                            error={errorsItinerary.boarding_date?.message}
+                            {...rest}
+                          />
+                        )}
+                      />
+                      <Controller
+                        name="landing_date"
+                        control={controlItinerary}
+                        render={({ field: { value, ...rest } }) => (
+                          <InputDate
+                            id="landing_date"
+                            label={STRINGS.form_input_landing_date_label}
+                            value={value ? getCorrectDate(value) : new Date()}
+                            error={errorsItinerary.landing_date?.message}
+                            {...rest}
+                          />
+                        )}
+                      />
+                    </div>
                     <Input
                       id="seats"
                       label={STRINGS.form_input_seats_label}
                       placeholder={STRINGS.form_input_seats_placeholder}
                       type="number"
-                      error={errors.seats?.message}
-                      {...register('seats')}
+                      error={errorsItinerary.seats?.message}
+                      {...registerItinerary('seats')}
+                    />
+                    <Controller
+                      name="details"
+                      control={controlItinerary}
+                      render={({ field: { onChange, ...rest } }) => (
+                        <RichTextEditor
+                          label={STRINGS.form_input_details_label}
+                          error={errorsItinerary.details?.message}
+                          onChange={(event) => onChange({ target: { value: event } })}
+                          content={dataItinerary?.data?.details}
+                          {...rest}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="summary"
+                      control={controlItinerary}
+                      render={({ field: { onChange, ...rest } }) => (
+                        <RichTextEditor
+                          label={STRINGS.form_input_summary_label}
+                          error={errorsItinerary.summary?.message}
+                          onChange={(event) => onChange({ target: { value: event } })}
+                          content={dataItinerary?.data?.summary}
+                          {...rest}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="services"
+                      control={controlItinerary}
+                      render={({ field: { onChange, ...rest } }) => (
+                        <RichTextEditor
+                          label={STRINGS.form_input_services_label}
+                          error={errorsItinerary.services?.message}
+                          onChange={(event) => onChange({ target: { value: event } })}
+                          content={dataItinerary?.data?.services}
+                          {...rest}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="terms_and_conditions"
+                      control={controlItinerary}
+                      render={({ field: { onChange, ...rest } }) => (
+                        <RichTextEditor
+                          label={STRINGS.form_input_terms_and_conditions_label}
+                          error={errorsItinerary.terms_and_conditions?.message}
+                          onChange={(event) => onChange({ target: { value: event } })}
+                          content={dataItinerary?.data?.terms_and_conditions}
+                          {...rest}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="cancelation_rules"
+                      control={controlItinerary}
+                      render={({ field: { onChange, ...rest } }) => (
+                        <RichTextEditor
+                          label={STRINGS.form_input_cancelation_rules_label}
+                          error={errorsItinerary.cancelation_rules?.message}
+                          onChange={(event) => onChange({ target: { value: event } })}
+                          content={dataItinerary?.data?.cancelation_rules}
+                          {...rest}
+                        />
+                      )}
                     />
                   </div>
+                </Card>
+                <div className="flex justify-between">
+                  <Button
+                    label={STRINGS.button_cancel_label}
+                    type="button"
+                    variant="outline"
+                    onClick={handleOnCancel}
+                  />
+                  <Button label={STRINGS.form_button_label} type="submit" loading={isLoading} />
                 </div>
-              </Card>
-              <Card>
-                <div className="p-4 flex flex-col gap-4">
-                  <h2 className="font-semibold text-xl mb-2 dark:text-white">
-                    {STRINGS.section_financial_data_title}
-                  </h2>
-                  <div className={`grid ${hasSecondRule ? 'md:grid-cols-2' : 'md:grid-cols-1'}  gap-4`}>
-                    <div className="flex flex-col gap-4">
-                      <Controller
-                        name="rules.0.purchase_deadline"
-                        control={control}
-                        render={({ field: { value, ...rest } }) => (
-                          <InputDate
-                            id="rules.0.purchase_deadline"
-                            label={
-                              STRINGS.form_input_first_subscription_deadline_label
-                            }
-                            value={value ? getCorrectDate(value) : new Date()}
-                            error={
-                              errors.rules?.[0]?.purchase_deadline?.message
-                            }
-                            {...rest}
-                          />
-                        )}
-                      />
-                      <Controller
-                        name="rules.0.seat_price"
-                        control={control}
-                        render={({ field: { value, ...rest } }) => (
-                          <InputCurrency
-                            id="rules.0.seat_price"
-                            label={
-                              STRINGS.form_input_first_subscription_value_label
-                            }
-                            placeholder={
-                              STRINGS.form_input_first_subscription_value_placeholder
-                            }
-                            error={errors.rules?.[0]?.seat_price?.message}
-                            defaultValue={value}
-                            {...rest}
-                          />
-                        )}
-                      />
-                      <Controller
-                        name="rules.0.pix_discount"
-                        control={control}
-                        render={({ field: { value, ...rest } }) => (
-                          <Input
-                            id="rules.0.pix_discount"
-                            label={
+              </form>
+              <form
+                className="flex flex-col gap-8"
+                onSubmit={handleSubmitItineraryRules(handleOnSubmitItineraryRules)}
+              >
+                <Card>
+                  <div className="p-4 flex flex-col gap-4">
+                    <h2 className="font-semibold text-xl mb-2 dark:text-white">
+                      {STRINGS.section_financial_data_title}
+                    </h2>
+                    <div className={`grid ${hasSecondRule ? 'md:grid-cols-2' : 'md:grid-cols-1'}  gap-4`}>
+                      <div className="flex flex-col gap-4">
+                        <Controller
+                          name="rules.0.purchase_deadline"
+                          control={controlItineraryRules}
+                          render={({ field: { value, ...rest } }) => (
+                            <InputDate
+                              id="rules.0.purchase_deadline"
+                              label={STRINGS.form_input_first_subscription_deadline_label}
+                              value={value ? getCorrectDate(value) : new Date()}
+                              error={errorsItineraryRules.rules?.[0]?.purchase_deadline?.message}
+                              {...rest}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="rules.0.seat_price"
+                          control={controlItineraryRules}
+                          render={({ field: { value, ...rest } }) => (
+                            <InputCurrency
+                              id="rules.0.seat_price"
+                              label={STRINGS.form_input_first_subscription_value_label}
+                              placeholder={STRINGS.form_input_first_subscription_value_placeholder}
+                              error={errorsItineraryRules.rules?.[0]?.seat_price?.message}
+                              defaultValue={value}
+                              {...rest}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="rules.0.pix_discount"
+                          control={controlItineraryRules}
+                          render={({ field: { value, ...rest } }) => (
+                            <Input
+                              id="rules.0.pix_discount"
+                              label={
                               STRINGS.form_input_first_subscription_percentage_discount_label
                             }
-                            placeholder={
+                              placeholder={
                               STRINGS.form_input_first_subscription_percentage_discount_placeholder
                             }
-                            type="text"
-                            mask="99.99%"
-                            value={value ? padLeftPercentage(value) : '0'}
-                            error={errors.rules?.[0]?.pix_discount?.message}
-                            {...rest}
-                          />
-                        )}
-                      />
-                      <InputCurrency
-                        label={STRINGS.form_input_first_subscription_amount_with_discount_label}
-                        placeholder={STRINGS.form_input_first_subscription_percentage_discount_placeholder}
-                        value={Number(firstAmount) - firstDiscountAmount}
-                        disabled
-                      />
-                      <Select
-                        id="rules.0.installments"
-                        label={
+                              type="text"
+                              mask="99.99%"
+                              value={value ? padLeftPercentage(value) : '0'}
+                              error={errorsItineraryRules.rules?.[0]?.pix_discount?.message}
+                              {...rest}
+                            />
+                          )}
+                        />
+                        <InputCurrency
+                          label={STRINGS.form_input_first_subscription_amount_with_discount_label}
+                          placeholder={STRINGS.form_input_first_subscription_percentage_discount_placeholder}
+                          value={firstAmountWithDiscount}
+                          disabled
+                        />
+                        <Select
+                          id="rules.0.installments"
+                          label={
                           STRINGS.form_input_first_subscription_installments_label
                         }
-                        placeholder={
+                          placeholder={
                           STRINGS.form_input_first_subscription_installments_placeholder
                         }
-                        options={installments}
-                        error={errors.rules?.[0]?.installments?.message}
-                        {...register('rules.0.installments')}
-                      />
-                    </div>
-                    {
+                          options={installments}
+                          error={errorsItineraryRules.rules?.[0]?.installments?.message}
+                          {...registerItineraryRules('rules.0.installments')}
+                        />
+                      </div>
+                      {
                       hasSecondRule && (
                       <div className="flex flex-col gap-4">
                         <Controller
                           name="rules.1.purchase_deadline"
-                          control={control}
+                          control={controlItineraryRules}
                           render={({ field: { value, ...rest } }) => (
                             <InputDate
                               id="rules.1.purchase_deadline"
-                              label={
-                              STRINGS.form_input_second_subscription_deadline_label
-                            }
+                              label={STRINGS.form_input_second_subscription_deadline_label}
                               value={value ? getCorrectDate(value) : new Date()}
-                              error={
-                              errors.rules?.[1]?.purchase_deadline?.message
-                            }
+                              error={errorsItineraryRules.rules?.[1]?.purchase_deadline?.message}
                               {...rest}
                             />
                           )}
                         />
                         <Controller
                           name="rules.1.seat_price"
-                          control={control}
+                          control={controlItineraryRules}
                           render={({ field: { value, ...rest } }) => (
                             <InputCurrency
                               id="rules.1.seat_price"
@@ -417,7 +513,7 @@ export const ItinerariesEdit = () => {
                               placeholder={
                               STRINGS.form_input_second_subscription_value_placeholder
                             }
-                              error={errors.rules?.[1]?.seat_price?.message}
+                              error={errorsItineraryRules.rules?.[1]?.seat_price?.message}
                               defaultValue={value}
                               {...rest}
                             />
@@ -425,7 +521,7 @@ export const ItinerariesEdit = () => {
                         />
                         <Controller
                           name="rules.1.pix_discount"
-                          control={control}
+                          control={controlItineraryRules}
                           render={({ field: { value, ...rest } }) => (
                             <Input
                               id="rules.1.pix_discount"
@@ -438,7 +534,7 @@ export const ItinerariesEdit = () => {
                               type="text"
                               mask="99.99%"
                               value={value ? padLeftPercentage(value) : '0'}
-                              error={errors.rules?.[1]?.pix_discount?.message}
+                              error={errorsItineraryRules.rules?.[1]?.pix_discount?.message}
                               {...rest}
                             />
                           )}
@@ -446,7 +542,7 @@ export const ItinerariesEdit = () => {
                         <InputCurrency
                           label={STRINGS.form_input_second_subscription_amount_with_discount_label}
                           placeholder={STRINGS.form_input_second_subscription_percentage_discount_placeholder}
-                          value={Number(secondAmount) - secondDiscountAmount}
+                          value={secondAmountWithDiscount}
                           disabled
                         />
                         <Select
@@ -458,26 +554,27 @@ export const ItinerariesEdit = () => {
                           STRINGS.form_input_second_subscription_installments_placeholder
                         }
                           options={installments}
-                          error={errors.rules?.[1]?.message}
-                          {...register('rules.1.installments')}
+                          error={errorsItineraryRules.rules?.[1]?.message}
+                          {...registerItineraryRules('rules.1.installments')}
                         />
                       </div>
                       )
                     }
 
+                    </div>
                   </div>
+                </Card>
+                <div className="flex justify-between">
+                  <Button
+                    label={STRINGS.button_cancel_label}
+                    type="button"
+                    variant="outline"
+                    onClick={handleOnCancel}
+                  />
+                  <Button label={STRINGS.form_button_label} type="submit" loading={isLoading} />
                 </div>
-              </Card>
-              <div className="flex justify-between">
-                <Button
-                  label={STRINGS.button_cancel_label}
-                  type="button"
-                  variant="outline"
-                  onClick={handleOnCancel}
-                />
-                <Button label={STRINGS.form_button_label} type="submit" loading={isLoading} />
-              </div>
-            </form>
+              </form>
+            </div>
         )}
       </main>
     </DashboardWrapper>

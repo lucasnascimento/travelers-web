@@ -77,6 +77,15 @@ export type ListItinerariesResponse = {
 export type UpdateItinerariesRequest = {
   is_deleted?: boolean
   status?: 'booking_closed' | 'booking_opened' | 'sold_out'
+  title?: string
+  boarding_date?: string
+  landing_date?: string
+  seats?: number
+  purchase_deadline?: string
+  details?: string
+  summary?: string
+  services?: string
+  terms_and_conditions?: string
 }
 
 export type UpdateItinerariesResponse = {
@@ -101,4 +110,23 @@ export type ListItineraryRuleResponse = {
     seat_price: string
     updated_at: string
   }[]
+}
+
+export type CreateItinerariesRequest = {
+  institution_id: string
+  title: string
+  boarding_date: string
+  landing_date: string
+  seats: number
+  sold_seats: number
+  purchase_deadline: string
+  installments: number
+  details: string
+  summary: string
+  services: string
+  terms_and_conditions: string
+}
+
+export type CreateItinerariesResponse = {
+  data: Itinerary
 }

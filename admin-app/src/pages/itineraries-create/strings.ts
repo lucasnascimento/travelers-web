@@ -4,6 +4,7 @@ export const STRINGS = {
   form_input_board_date_label: 'Data de saída',
   form_input_cancelation_rules_label: 'Regras de cancelamento',
   form_input_details_label: 'Detalhe da vaga',
+  form_input_details_placeholder: 'Digite o detalhe da vaga',
   form_input_first_subscription_amount_with_discount_label: '⁠Valor com desconto no PIX na 1a data limite',
   form_input_first_subscription_deadline_label: '⁠1a Data limite de inscrições',
   form_input_first_subscription_installments_label: '⁠Parcelas na 1a data limite',
@@ -32,9 +33,9 @@ export const STRINGS = {
   form_input_terms_and_conditions_label: 'Termos e condições',
   section_financial_data_title: 'Dados financeiros',
   section_geral_data_title: 'Dados gerais',
-  title: 'Editar roteiro',
+  title: 'Criar roteiro',
   updated_error: 'Ocorreu um erro. Tente novamente',
-  updated_success: 'Roteiro atualizado com sucesso',
+  updated_success: 'Roteiro criado com sucesso',
 }
 
 //

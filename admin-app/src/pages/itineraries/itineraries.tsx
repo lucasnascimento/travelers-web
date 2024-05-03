@@ -72,6 +72,7 @@ export const Itineraries = () => {
   //   mutateAsyncUpdateInstitution(formData)
   // }
 
+  // const handleOnClickCreate = () => navigate(routes.itinerariesCreate.path)
   const handleOnClickEdit = (id: string) => (
     navigate(routes.itinerariesEdit.getPath(id))
   )
@@ -184,7 +185,7 @@ export const Itineraries = () => {
           {registeredWithSuccess && <Alert title={STRINGS.registered_success} type="success" />}
           <section>
             <RegisterListTable
-              // onClickCreate={onOpen}
+              // onClickCreate={handleOnClickCreate}
               loading={isFetching}
               headers={[
                 STRINGS.table_header_name_text,

@@ -3,15 +3,15 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline'
 
 export type Props = {
   fullWidth?: boolean
-  className?: string
   colorScheme?: 'blue' | 'gray' | 'red'
   disabled?: boolean
   size?: 'xs' | 'sm' | 'md' | 'lg'
   variant?: 'solid' | 'outline'
   type?: 'button' | 'submit' | 'reset'
+  highlighted?: boolean
   icon?: React.ForwardRefExoticComponent<Omit<React.SVGProps<SVGSVGElement>, 'ref'> & { title?: string | undefined; titleId?: string | undefined; } & React.RefAttributes<SVGSVGElement>>
   iconPosition?: 'left' | 'right'
-  label: string
+  label?: string
   loading?: boolean
   onClick?: () => void
 }
@@ -23,10 +23,10 @@ const sizesClasses = {
   xs: 'px-2 py-1 text-xs',
 }
 
-const getVariantClasses = (colorScheme: string) => {
+const getVariantClasses = (colorScheme: string, highlighted?: boolean) => {
   if (colorScheme === 'gray') {
     return {
-      outline: 'inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600',
+      outline: `inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border ${highlighted ? 'bg-gray-50 dark:bg-gray-800' : ''} hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-gray-800`,
       solid: 'inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-gray-600 text-white hover:bg-gray-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600',
     }
   }
@@ -47,10 +47,10 @@ const getVariantClasses = (colorScheme: string) => {
 const rawButtonClasses = 'rounded text-center transition flex gap-2 items-center justify-center'
 
 export const Button = ({
-  className = '',
   colorScheme = 'blue',
   disabled = false,
   fullWidth = false,
+  highlighted = false,
   icon: Icon,
   iconPosition = 'left',
   label,
@@ -61,9 +61,9 @@ export const Button = ({
   ...props
 }: Props) => {
   const fullWidthClass = fullWidth ? 'w-full' : ''
-  const variantClasses = getVariantClasses(colorScheme)[variant]
+  const variantClasses = getVariantClasses(colorScheme, highlighted)[variant]
   const disabledClasses = disabled || loading ? 'opacity-50 cursor-not-allowed' : ''
-  const buttonClasses = `${fullWidthClass} ${rawButtonClasses} ${sizesClasses[size]} ${variantClasses} ${disabledClasses} ${className}`
+  const buttonClasses = `${fullWidthClass} ${rawButtonClasses} ${sizesClasses[size]} ${variantClasses} ${disabledClasses}`
 
   return (
     <button
@@ -74,7 +74,7 @@ export const Button = ({
     >
       {!loading && iconPosition === 'left' ? Icon && <Icon className="h-5 w-5" /> : null}
       {loading ? <ArrowPathIcon className="h-6 w-6 animate-spin" /> : null}
-      {label}
+      {label || ''}
       {!loading && iconPosition === 'right' ? Icon && <Icon className="h-5 w-5" /> : null}
     </button>
   )
