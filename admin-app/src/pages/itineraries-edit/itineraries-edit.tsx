@@ -6,24 +6,35 @@ import {
   Alert,
   Button,
   Card,
+  ConfirmationModal,
   DashboardWrapper,
   Input,
   InputCurrency,
   InputDate,
+  Modal,
+  RegisterListTable,
+  RegisterListTableCol,
+  RegisterListTableRow,
   RichTextEditor,
   Select,
+  useModal,
 } from '../../components'
 import { formatDateAmerican, scrollToTop } from '../../utils'
 
 import { STRINGS } from './strings'
 import {
+  useCreateItinerariesDocuments,
   useFormItinerary,
+  useFormItineraryDocuments,
   useFormItineraryRules,
   useGetItinerary,
   useListGroups,
+  useListItinerariesDocuments,
   useListItinerariesRules,
+  useRemoveItinerariesRule,
   useUpdateItineraries,
   useUpdateItinerariesRule,
+  useUploadItinerariesDocuments,
 } from './hooks'
 
 const getCorrectDate = (rawDate: string | Date) => {
@@ -102,6 +113,7 @@ const calculateDiscountInReals = (rawAmount: string, rawPercentage: string) => {
 }
 
 export const ItinerariesEdit = () => {
+  const [documentIdToRemove, setDocumentIdToRemove] = React.useState<string | null>(null)
   const [isLoading, setIsLoading] = React.useState(false)
   const navigate = useNavigate()
   const { id } = useParams()
@@ -111,6 +123,12 @@ export const ItinerariesEdit = () => {
     error: errorItinerary,
     isFetching: isFetchingItinerary,
   } = useGetItinerary(id || '')
+  const {
+    data: dataItinerariesDocuments,
+    error: errorItinerariesDocuments,
+    isFetching: isFetchingItinerariesDocuments,
+    refetch: refetchItinerariesDocuments,
+  } = useListItinerariesDocuments(id || '')
   const {
     data: dataGroups,
     error: errorGroups,
@@ -129,6 +147,19 @@ export const ItinerariesEdit = () => {
     error: errorUpdateItinerariesRule,
     mutateAsync: mutateAsyncUpdateItinerariesRule,
   } = useUpdateItinerariesRule()
+  const {
+    error: errorRemoveItinerariesDocuments,
+    isPending: isPendingRemoveItinerariesDocuments,
+    mutateAsync: mutateAsyncRemoveItinerariesDocuments,
+  } = useRemoveItinerariesRule()
+  const {
+    error: errorCreateItinerariesDocuments,
+    mutateAsync: mutateAsyncCreateItinerariesDocuments,
+  } = useCreateItinerariesDocuments()
+  const {
+    error: errorUploadItinerariesDocuments,
+    mutateAsync: mutateAsyncUploadItinerariesDocuments,
+  } = useUploadItinerariesDocuments()
 
   const {
     control: controlItinerary,
@@ -145,6 +176,23 @@ export const ItinerariesEdit = () => {
     reset: resetItineraryRules,
     watch: watchItineraryRules,
   } = useFormItineraryRules()
+  const {
+    formState: { errors: errorsItineraryDocuments },
+    handleSubmit: handleSubmitItineraryDocuments,
+    register: registerItineraryDocuments,
+    reset: resetItineraryDocuments,
+  } = useFormItineraryDocuments()
+  const {
+    isOpen: isOpenConfirmation,
+    onClose: onCloseConfirmation,
+    onOpen: onOpenConfirmation,
+  } = useModal()
+  const {
+    isOpen: isOpenCreation,
+    onClose: onCloseCreation,
+    onOpen: onOpenCreation,
+  } = useModal()
+
   const firstAmount = watchItineraryRules('rules.0.seat_price') || ''
   const secondAmount = watchItineraryRules('rules.1.seat_price') || ''
   const firstDiscountPercentage = watchItineraryRules('rules.0.pix_discount') || ''
@@ -199,7 +247,6 @@ export const ItinerariesEdit = () => {
     scrollToTop()
     setIsLoading(false)
   }
-
   const handleOnSubmitItineraryRules = async (rawData: any) => {
     setIsLoading(true)
 
@@ -233,9 +280,72 @@ export const ItinerariesEdit = () => {
     scrollToTop()
     setIsLoading(false)
   }
+  const handleOnRemoveDocument = async () => {
+    try {
+      await mutateAsyncRemoveItinerariesDocuments({
+        documentId: documentIdToRemove || '',
+        itineraryId: id || '',
+      })
 
-  const isFetching = isFetchingItinerary || isFetchingItinerariesRules || isFetchingGroups
-  const hasError = errorItinerary || errorItinerariesRules || errorGroups || errorUpdateItineraries || errorUpdateItinerariesRule
+      refetchItinerariesDocuments()
+
+      setUpdatedWithSuccess(true)
+    } finally {
+      onCloseConfirmation()
+    }
+  }
+  const handleOnClickCreateDocument = () => {
+    onOpenCreation()
+  }
+  const handleOnSubmitItineraryDocuments = async (rawData: any) => {
+    setIsLoading(true)
+
+    try {
+      const createDocumentPayload = {
+        description: rawData.description,
+        link: rawData.link,
+        position: 1,
+        title: rawData.title,
+      }
+
+      const createdDocument = await mutateAsyncCreateItinerariesDocuments({
+        itineraryId: id || '',
+        payload: createDocumentPayload,
+      })
+
+      if (rawData.file[0]) {
+        const formData = new FormData()
+        formData.append('file', rawData.file[0])
+
+        await mutateAsyncUploadItinerariesDocuments({
+          documentId: createdDocument.data.id,
+          itineraryId: id || '',
+          payload: formData,
+        })
+      }
+
+      resetItineraryDocuments()
+      setUpdatedWithSuccess(true)
+      refetchItinerariesDocuments()
+      scrollToTop()
+    } catch {
+      setUpdatedWithSuccess(false)
+    } finally {
+      setIsLoading(false)
+      onCloseCreation()
+    }
+  }
+
+  const isFetching = isFetchingItinerary || isFetchingItinerariesRules || isFetchingGroups || isFetchingItinerariesDocuments
+  const hasError = errorItinerary
+    || errorItinerariesRules
+    || errorGroups
+    || errorUpdateItineraries
+    || errorUpdateItinerariesRule
+    || errorItinerariesDocuments
+    || errorRemoveItinerariesDocuments
+    || errorCreateItinerariesDocuments
+    || errorUploadItinerariesDocuments
   const groups = dataGroups?.data
     ? dataGroups?.data.map((group) => ({
       label: group.description,
@@ -245,23 +355,84 @@ export const ItinerariesEdit = () => {
   const hasSecondRule = dataItinerariesRules?.data?.[1]
 
   return (
-    <DashboardWrapper
-      title={STRINGS.title}
-      breadcrumbs={[{ title: STRINGS.title }]}
-    >
-      <main className="flex flex-col gap-8 pb-12">
-        {updatedWithSuccess && (
-          <Alert title={STRINGS.updated_success} type="success" />
-        )}
-        {hasError && (
-          <Alert title={STRINGS.updated_error} type="error" />
-        )}
-        {isFetching && (
-          <div className="flex animate-pulse">
-            <span className="w-full h-52 rounded-xl py-40 bg-gray-200 dark:bg-gray-700" />
+    <>
+      <Modal
+        isOpen={isOpenCreation}
+        onClose={onCloseCreation}
+        title={STRINGS.modal_create_document_title}
+      >
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={handleSubmitItineraryDocuments(handleOnSubmitItineraryDocuments)}
+        >
+          <div className="flex flex-col gap-8">
+            <Input
+              id="title"
+              label={STRINGS.modal_create_document_input_title_label}
+              placeholder={STRINGS.modal_create_document_input_title_placeholder}
+              type="text"
+              error={errorsItineraryDocuments.title?.message}
+              {...registerItineraryDocuments('title')}
+            />
+            <Input
+              id="description"
+              label={STRINGS.modal_create_document_input_description_label}
+              placeholder={STRINGS.modal_create_document_input_description_placeholder}
+              type="text"
+              error={errorsItineraryDocuments.description?.message}
+              {...registerItineraryDocuments('description')}
+            />
+            <Input
+              id="link"
+              label={STRINGS.modal_create_document_input_link_label}
+              placeholder={STRINGS.modal_create_document_input_link_placeholder}
+              type="text"
+              error={errorsItineraryDocuments.link?.message}
+              {...registerItineraryDocuments('link')}
+            />
+            <Input
+              id="file"
+              label={STRINGS.modal_create_document_input_file_label}
+              placeholder={STRINGS.modal_create_document_input_file_placeholder}
+              type="file"
+              error={errorsItineraryDocuments.file?.message}
+              {...registerItineraryDocuments('file')}
+            />
           </div>
-        )}
-        {!isFetchingItinerary
+          <div className="flex justify-between">
+            <Button
+              label={STRINGS.button_cancel_label}
+              type="button"
+              variant="outline"
+              onClick={onCloseCreation}
+            />
+            <Button label={STRINGS.form_button_label} type="submit" loading={isLoading} />
+          </div>
+        </form>
+      </Modal>
+      <ConfirmationModal
+        isOpen={isOpenConfirmation}
+        onCancel={onCloseConfirmation}
+        onContinue={handleOnRemoveDocument}
+        loading={isPendingRemoveItinerariesDocuments}
+      />
+      <DashboardWrapper
+        title={STRINGS.title}
+        breadcrumbs={[{ title: STRINGS.title }]}
+      >
+        <main className="flex flex-col gap-8 pb-12">
+          {updatedWithSuccess && (
+            <Alert title={STRINGS.updated_success} type="success" />
+          )}
+          {hasError && (
+            <Alert title={STRINGS.updated_error} type="error" />
+          )}
+          {isFetching && (
+            <div className="flex animate-pulse">
+              <span className="w-full h-52 rounded-xl py-40 bg-gray-200 dark:bg-gray-700" />
+            </div>
+          )}
+          {!isFetchingItinerary
           && !isFetchingItinerariesRules
           && dataItinerary
           && dataItinerariesRules && (
@@ -271,11 +442,11 @@ export const ItinerariesEdit = () => {
                 onSubmit={handleSubmitItinerary(handleOnSubmitItinerary)}
               >
                 <Card>
-                  <div className="p-4 flex flex-col gap-4">
+                  <div className="p-4 flex flex-col gap-8">
                     <h2 className="font-semibold text-xl mb-2 dark:text-white">
                       {STRINGS.section_geral_data_title}
                     </h2>
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid md:grid-cols-2 gap-8">
                       <Input
                         id="title"
                         label={STRINGS.form_input_itinerary_name_label}
@@ -295,7 +466,7 @@ export const ItinerariesEdit = () => {
                         {...registerItinerary('group_id')}
                       />
                     </div>
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid md:grid-cols-2 gap-8">
                       <Controller
                         name="boarding_date"
                         control={controlItinerary}
@@ -408,17 +579,63 @@ export const ItinerariesEdit = () => {
                   <Button label={STRINGS.form_button_label} type="submit" loading={isLoading} />
                 </div>
               </form>
+              <Card>
+                <div className="p-4 flex flex-col gap-8">
+                  <h2 className="font-semibold text-xl mb-2 dark:text-white">
+                    {STRINGS.section_documents_data_title}
+                  </h2>
+                  <RegisterListTable
+                    onClickCreate={handleOnClickCreateDocument}
+                    loading={isFetching}
+                    headers={[
+                      STRINGS.table_documents_header_title,
+                      STRINGS.table_documents_header_description,
+                      STRINGS.table_documents_header_url,
+                    ]}
+                  >
+                    {
+                        dataItinerariesDocuments?.data?.map((document) => (
+                          <RegisterListTableRow key={document.id}>
+                            <RegisterListTableCol>{document.title}</RegisterListTableCol>
+                            <RegisterListTableCol>{document.description}</RegisterListTableCol>
+                            <RegisterListTableCol>
+                              <a
+                                className="text-blue-500"
+                                href={document.link}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {document.link}
+                              </a>
+                            </RegisterListTableCol>
+                            <RegisterListTableCol>
+                              <Button
+                                label={STRINGS.table_documents_body_button_remove}
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setDocumentIdToRemove(document.id)
+                                  onOpenConfirmation()
+                                }}
+                              />
+                            </RegisterListTableCol>
+                          </RegisterListTableRow>
+                        ))
+                      }
+                  </RegisterListTable>
+                </div>
+              </Card>
               <form
-                className="flex flex-col gap-8"
+                className="flex flex-col gap-4"
                 onSubmit={handleSubmitItineraryRules(handleOnSubmitItineraryRules)}
               >
                 <Card>
-                  <div className="p-4 flex flex-col gap-4">
+                  <div className="p-4 flex flex-col gap-8">
                     <h2 className="font-semibold text-xl mb-2 dark:text-white">
                       {STRINGS.section_financial_data_title}
                     </h2>
                     <div className={`grid ${hasSecondRule ? 'md:grid-cols-2' : 'md:grid-cols-1'}  gap-4`}>
-                      <div className="flex flex-col gap-4">
+                      <div className="flex flex-col gap-8">
                         <Controller
                           name="rules.0.purchase_deadline"
                           control={controlItineraryRules}
@@ -487,7 +704,7 @@ export const ItinerariesEdit = () => {
                       </div>
                       {
                       hasSecondRule && (
-                      <div className="flex flex-col gap-4">
+                      <div className="flex flex-col gap-8">
                         <Controller
                           name="rules.1.purchase_deadline"
                           control={controlItineraryRules}
@@ -575,8 +792,9 @@ export const ItinerariesEdit = () => {
                 </div>
               </form>
             </div>
-        )}
-      </main>
-    </DashboardWrapper>
+          )}
+        </main>
+      </DashboardWrapper>
+    </>
   )
 }

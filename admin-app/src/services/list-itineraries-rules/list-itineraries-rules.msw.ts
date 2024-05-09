@@ -21,7 +21,7 @@ const listItinerariesRulesData = {
   ],
 }
 
-export const listItineraries = http.get(
+export const listItinerariesRules = http.get(
   `${variables.API_BASE_URL}api/admin/itinerary/:id/rule`,
   () => HttpResponse.json({
     status: 200,
