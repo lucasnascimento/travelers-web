@@ -24,13 +24,17 @@ import { formatDateAmerican, scrollToTop } from '../../utils'
 import { STRINGS } from './strings'
 import {
   useCreateItinerariesDocuments,
+  useCreateItinerariesEntries,
   useFormItinerary,
   useFormItineraryDocuments,
+  useFormItineraryEntries,
   useFormItineraryRules,
   useGetItinerary,
   useListGroups,
   useListItinerariesDocuments,
+  useListItinerariesEntries,
   useListItinerariesRules,
+  useRemoveItinerariesEntry,
   useRemoveItinerariesRule,
   useUpdateItineraries,
   useUpdateItinerariesRule,
@@ -114,6 +118,7 @@ const calculateDiscountInReals = (rawAmount: string, rawPercentage: string) => {
 
 export const ItinerariesEdit = () => {
   const [documentIdToRemove, setDocumentIdToRemove] = React.useState<string | null>(null)
+  const [entryIdToRemove, setEntryIdToRemove] = React.useState<string | null>(null)
   const [isLoading, setIsLoading] = React.useState(false)
   const navigate = useNavigate()
   const { id } = useParams()
@@ -153,6 +158,11 @@ export const ItinerariesEdit = () => {
     mutateAsync: mutateAsyncRemoveItinerariesDocuments,
   } = useRemoveItinerariesRule()
   const {
+    error: errorRemoveItinerariesEntries,
+    isPending: isPendingRemoveItinerariesEntries,
+    mutateAsync: mutateAsyncRemoveItinerariesEntries,
+  } = useRemoveItinerariesEntry()
+  const {
     error: errorCreateItinerariesDocuments,
     mutateAsync: mutateAsyncCreateItinerariesDocuments,
   } = useCreateItinerariesDocuments()
@@ -160,7 +170,16 @@ export const ItinerariesEdit = () => {
     error: errorUploadItinerariesDocuments,
     mutateAsync: mutateAsyncUploadItinerariesDocuments,
   } = useUploadItinerariesDocuments()
-
+  const {
+    data: dataItinerariesEntries,
+    error: errorItinerariesEntries,
+    isFetching: isFetchingItinerariesEntries,
+    refetch: refetchItinerariesEntries,
+  } = useListItinerariesEntries(id || '')
+  const {
+    error: errorCreateItinerariesEntries,
+    mutateAsync: mutateAsyncCreateItinerariesEntries,
+  } = useCreateItinerariesEntries()
   const {
     control: controlItinerary,
     formState: { errors: errorsItinerary },
@@ -183,14 +202,31 @@ export const ItinerariesEdit = () => {
     reset: resetItineraryDocuments,
   } = useFormItineraryDocuments()
   const {
-    isOpen: isOpenConfirmation,
-    onClose: onCloseConfirmation,
-    onOpen: onOpenConfirmation,
+    control: controlItineraryEntries,
+    formState: { errors: errorsItineraryEntries },
+    handleSubmit: handleSubmitItineraryEntries,
+    register: registerItineraryEntries,
+    reset: resetItineraryEntries,
+  } = useFormItineraryEntries()
+  const {
+    isOpen: isOpenDocumentConfirmation,
+    onClose: onCloseDocumentConfirmation,
+    onOpen: onOpenDocumentConfirmation,
   } = useModal()
   const {
-    isOpen: isOpenCreation,
-    onClose: onCloseCreation,
-    onOpen: onOpenCreation,
+    isOpen: isOpenDocumentCreation,
+    onClose: onCloseDocumentCreation,
+    onOpen: onOpenDocumentCreation,
+  } = useModal()
+  const {
+    isOpen: isOpenEntryConfirmation,
+    onClose: onCloseEntryConfirmation,
+    onOpen: onOpenEntryConfirmation,
+  } = useModal()
+  const {
+    isOpen: isOpenEntryCreation,
+    onClose: onCloseEntryCreation,
+    onOpen: onOpenEntryCreation,
   } = useModal()
 
   const firstAmount = watchItineraryRules('rules.0.seat_price') || ''
@@ -203,7 +239,7 @@ export const ItinerariesEdit = () => {
   const secondAmountWithDiscount = (cleanCurrency(secondAmount) - secondDiscountAmount).toFixed(2)
 
   React.useEffect(() => {
-    const formatedRules = dataItinerariesRules?.data?.map((rule) => {
+    const formatedRules = dataItinerariesRules?.data?.map((rule: any) => {
       const pixDiscount = Number(rule.pix_discount) * 100
 
       return {
@@ -291,11 +327,11 @@ export const ItinerariesEdit = () => {
 
       setUpdatedWithSuccess(true)
     } finally {
-      onCloseConfirmation()
+      onCloseDocumentConfirmation()
     }
   }
   const handleOnClickCreateDocument = () => {
-    onOpenCreation()
+    onOpenDocumentCreation()
   }
   const handleOnSubmitItineraryDocuments = async (rawData: any) => {
     setIsLoading(true)
@@ -304,7 +340,7 @@ export const ItinerariesEdit = () => {
       const createDocumentPayload = {
         description: rawData.description,
         link: rawData.link,
-        position: 1,
+        position: 0,
         title: rawData.title,
       }
 
@@ -332,11 +368,58 @@ export const ItinerariesEdit = () => {
       setUpdatedWithSuccess(false)
     } finally {
       setIsLoading(false)
-      onCloseCreation()
+      onCloseDocumentCreation()
+    }
+  }
+  const handleOnRemoveEntry = async () => {
+    try {
+      await mutateAsyncRemoveItinerariesEntries({
+        entryId: entryIdToRemove || '',
+        itineraryId: id || '',
+      })
+
+      refetchItinerariesEntries()
+
+      setUpdatedWithSuccess(true)
+    } finally {
+      onCloseEntryConfirmation()
+    }
+  }
+  const handleOnClickCreateEntry = () => {
+    onOpenEntryCreation()
+  }
+  const handleOnSubmitItineraryEntries = async (rawData: any) => {
+    setIsLoading(true)
+
+    try {
+      const payload = {
+        description: rawData.description,
+        position: 0,
+        title: rawData.title,
+      }
+
+      await mutateAsyncCreateItinerariesEntries({
+        itineraryId: id || '',
+        payload,
+      })
+
+      resetItineraryEntries()
+      setUpdatedWithSuccess(true)
+      refetchItinerariesEntries()
+      scrollToTop()
+    } catch {
+      setUpdatedWithSuccess(false)
+    } finally {
+      setIsLoading(false)
+      onCloseEntryCreation()
     }
   }
 
-  const isFetching = isFetchingItinerary || isFetchingItinerariesRules || isFetchingGroups || isFetchingItinerariesDocuments
+  const isFetching = isFetchingItinerary
+    || isFetchingItinerariesRules
+    || isFetchingGroups
+    || isFetchingItinerariesDocuments
+    || isFetchingItinerariesEntries
   const hasError = errorItinerary
     || errorItinerariesRules
     || errorGroups
@@ -346,6 +429,9 @@ export const ItinerariesEdit = () => {
     || errorRemoveItinerariesDocuments
     || errorCreateItinerariesDocuments
     || errorUploadItinerariesDocuments
+    || errorItinerariesEntries
+    || errorRemoveItinerariesEntries
+    || errorCreateItinerariesEntries
   const groups = dataGroups?.data
     ? dataGroups?.data.map((group) => ({
       label: group.description,
@@ -357,8 +443,50 @@ export const ItinerariesEdit = () => {
   return (
     <>
       <Modal
-        isOpen={isOpenCreation}
-        onClose={onCloseCreation}
+        isOpen={isOpenEntryCreation}
+        onClose={onCloseEntryCreation}
+        title={STRINGS.modal_create_entry_title}
+      >
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={handleSubmitItineraryEntries(handleOnSubmitItineraryEntries)}
+        >
+          <div className="flex flex-col gap-8">
+            <Input
+              id="title"
+              label={STRINGS.modal_create_entry_input_title_label}
+              placeholder={STRINGS.modal_create_entry_input_title_placeholder}
+              type="text"
+              error={errorsItineraryEntries.title?.message}
+              {...registerItineraryEntries('title')}
+            />
+            <Controller
+              name="description"
+              control={controlItineraryEntries}
+              render={({ field: { onChange, ...rest } }) => (
+                <RichTextEditor
+                  label={STRINGS.modal_create_entry_input_description_label}
+                  error={errorsItineraryEntries.description?.message}
+                  onChange={(event) => onChange({ target: { value: event } })}
+                  {...rest}
+                />
+              )}
+            />
+          </div>
+          <div className="flex justify-between">
+            <Button
+              label={STRINGS.button_cancel_label}
+              type="button"
+              variant="outline"
+              onClick={onCloseEntryCreation}
+            />
+            <Button label={STRINGS.form_button_label} type="submit" loading={isLoading} />
+          </div>
+        </form>
+      </Modal>
+      <Modal
+        isOpen={isOpenDocumentCreation}
+        onClose={onCloseDocumentCreation}
         title={STRINGS.modal_create_document_title}
       >
         <form
@@ -395,7 +523,7 @@ export const ItinerariesEdit = () => {
               label={STRINGS.modal_create_document_input_file_label}
               placeholder={STRINGS.modal_create_document_input_file_placeholder}
               type="file"
-              error={errorsItineraryDocuments.file?.message}
+              error={errorsItineraryDocuments.link?.message}
               {...registerItineraryDocuments('file')}
             />
           </div>
@@ -404,17 +532,23 @@ export const ItinerariesEdit = () => {
               label={STRINGS.button_cancel_label}
               type="button"
               variant="outline"
-              onClick={onCloseCreation}
+              onClick={onCloseDocumentCreation}
             />
             <Button label={STRINGS.form_button_label} type="submit" loading={isLoading} />
           </div>
         </form>
       </Modal>
       <ConfirmationModal
-        isOpen={isOpenConfirmation}
-        onCancel={onCloseConfirmation}
+        isOpen={isOpenDocumentConfirmation}
+        onCancel={onCloseDocumentConfirmation}
         onContinue={handleOnRemoveDocument}
         loading={isPendingRemoveItinerariesDocuments}
+      />
+      <ConfirmationModal
+        isOpen={isOpenEntryConfirmation}
+        onCancel={onCloseEntryConfirmation}
+        onContinue={handleOnRemoveEntry}
+        loading={isPendingRemoveItinerariesEntries}
       />
       <DashboardWrapper
         title={STRINGS.title}
@@ -437,6 +571,46 @@ export const ItinerariesEdit = () => {
           && dataItinerary
           && dataItinerariesRules && (
             <div className="flex flex-col gap-12">
+              <Card>
+                <div className="p-4 flex flex-col gap-8">
+                  <h2 className="font-semibold text-xl mb-2 dark:text-white">
+                    {STRINGS.section_entries_data_title}
+                  </h2>
+                  <RegisterListTable
+                    onClickCreate={handleOnClickCreateEntry}
+                    loading={isFetching}
+                    headers={[
+                      STRINGS.table_entries_header_title,
+                      STRINGS.table_entries_header_description,
+                    ]}
+                  >
+                    {
+                        dataItinerariesEntries?.data?.map((entry) => (
+                          <RegisterListTableRow key={entry.id}>
+                            <RegisterListTableCol>{entry.title}</RegisterListTableCol>
+                            <RegisterListTableCol>
+                              <div
+                                dangerouslySetInnerHTML={{ __html: entry.description }}
+                              />
+
+                            </RegisterListTableCol>
+                            <RegisterListTableCol>
+                              <Button
+                                label={STRINGS.table_entries_body_button_remove}
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setEntryIdToRemove(entry.id)
+                                  onOpenEntryConfirmation()
+                                }}
+                              />
+                            </RegisterListTableCol>
+                          </RegisterListTableRow>
+                        ))
+                      }
+                  </RegisterListTable>
+                </div>
+              </Card>
               <form
                 className="flex flex-col gap-4"
                 onSubmit={handleSubmitItinerary(handleOnSubmitItinerary)}
@@ -615,7 +789,7 @@ export const ItinerariesEdit = () => {
                                 variant="outline"
                                 onClick={() => {
                                   setDocumentIdToRemove(document.id)
-                                  onOpenConfirmation()
+                                  onOpenDocumentConfirmation()
                                 }}
                               />
                             </RegisterListTableCol>
