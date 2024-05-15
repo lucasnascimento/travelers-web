@@ -9,16 +9,14 @@ export type Props = {
   title?: string
 }
 
-const ModalComponent = ({
-  children, className, isOpen, onClose, title,
-}: Props) => {
+const ModalComponent = ({ children, className, isOpen, onClose, title }: Props) => {
   if (!isOpen) {
     return null
   }
 
   return (
     <div
-      className="h-screen flex items-center justify-center fixed w-full z-90"
+      className="h-full w-full fixed z-90 top-0 left-0 flex items-center justify-center"
       onClick={onClose}
       onKeyDown={onClose}
       onKeyUp={onClose}
@@ -35,15 +33,10 @@ const ModalComponent = ({
         tabIndex={0}
       >
         <div className={`flex flex-row ${title ? 'justify-between' : 'justify-end'} py-5 px-7 border-b dark:border-gray-700`}>
-          { title && <p className="font-bold text-gray-800 dark:text-white">{title}</p> }
-          <XMarkIcon
-            className="h-6 w-6 text-gray-800 dark:text-white cursor-pointer"
-            onClick={onClose}
-          />
+          {title && <p className="font-bold text-gray-800 dark:text-white">{title}</p>}
+          <XMarkIcon className="h-6 w-6 text-gray-800 dark:text-white cursor-pointer" onClick={onClose} />
         </div>
-        <div className="py-7 px-7">
-          {children}
-        </div>
+        <div className="py-7 px-7">{children}</div>
       </div>
     </div>
   )

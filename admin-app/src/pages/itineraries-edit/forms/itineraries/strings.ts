@@ -1,0 +1,17 @@
+export const STRINGS = {
+  form_button_cancel_label: 'Cancelar',
+  form_button_save_label: 'Salvar',
+  modal_create_edit_title: 'Editar itinerário',
+  modal_create_entry_input_description_label: 'Descrição do itinário',
+  modal_create_entry_input_position_label: 'Posição de ordenação(de 0 a 1000)',
+  modal_create_entry_input_position_placeholder: 'Digite a posição de ordenação',
+  modal_create_entry_input_title_label: 'Nome do itinário',
+  modal_create_entry_input_title_placeholder: 'Digite o nome do itinário',
+  modal_create_entry_title: 'Criar itinerário',
+  table_body_button_edit: 'Editar',
+  table_body_button_remove: 'Remover',
+  table_header_description: 'Descrição',
+  table_header_position: 'Posição',
+  table_header_title: 'Título',
+  title: 'Itinerários',
+}

@@ -6,6 +6,7 @@ import { updateItineraries } from '../services/update-itineraries/update-itinera
 import { listGroups } from '../services/list-groups/list-groups.msw'
 import { listItinerariesDocuments } from '../services/list-itineraries-documents/list-itineraries-documents.msw'
 import { removeItinerariesDocuments } from '../services/remove-itineraries-documents/remove-itineraries-documents.msw'
+import { updateItinerariesEntries } from '../services/update-itineraries-entries/update-itineraries-entries.msw'
 
 export const handlers = [
   authenticate,
@@ -16,4 +17,5 @@ export const handlers = [
   listItineraries,
   listGroups,
   updateItineraries,
+  updateItinerariesEntries,
 ]
