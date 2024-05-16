@@ -49,7 +49,7 @@ export const RegisterListTable = ({
         </div>
       )
       : (
-        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-gray-700">
+        <div className="overflow-x-auto bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-gray-700">
           <div className="px-6 py-4 grid gap-3 md:flex md:justify-end md:items-center border-b border-gray-200 dark:border-gray-700">
             {/* <div className="inline-flex gap-x-2">
               <Input

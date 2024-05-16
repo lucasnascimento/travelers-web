@@ -4,6 +4,7 @@ import * as React from 'react'
 import {
   Alert,
   Button,
+  ConfirmationModal,
   DashboardWrapper,
   Input,
   Modal,
@@ -17,28 +18,26 @@ import {
 import { removeSpecialCharacters } from '../../utils'
 
 import { STRINGS } from './strings'
-import {
-  useCreateInstitution,
-  useForm,
-  useListInstitutions,
-  useUpdateInstitution,
-} from './hooks'
+import { useCreateInstitution, useForm, useListInstitutions, useUpdateInstitution } from './hooks'
 
 export const Institutions = () => {
-  const [registeredWithSuccess, setRegisteredWithSuccess] = React.useState(
-    false
-  )
-  const { data, isFetching } = useListInstitutions()
-  const {
-    error: errorOnCreateInstitution,
-    mutateAsync: mutateAsyncCreateInstitution,
-  } = useCreateInstitution()
+  const [institutionIdToChange, setInstitutionIdToChange] = React.useState<string | null>(null)
+  const [institutionStatusToChange, setInstitutionStatusToChange] = React.useState<boolean | null>(null)
+  const [registeredWithSuccess, setRegisteredWithSuccess] = React.useState(false)
+  const { data, isFetching, refetch } = useListInstitutions()
+  const { error: errorOnCreateInstitution, mutateAsync: mutateAsyncCreateInstitution } = useCreateInstitution()
   const {
     error: errorOnUpdateInstitution,
+    isPending: isPendingUpdateInstitution,
     mutateAsync: mutateAsyncUpdateInstitution,
   } = useUpdateInstitution()
   // const { isOpen, onClose, onOpen } = useModal()
   const { isOpen, onClose } = useModal()
+  const {
+    isOpen: isOpenInstitutionConfirmation,
+    onClose: onCloseInstitutionConfirmation,
+    onOpen: onOpenInstitutionConfirmation,
+  } = useModal()
   const {
     formState: { errors },
     handleSubmit,
@@ -49,13 +48,12 @@ export const Institutions = () => {
   const hasBankingAccount = watch('has_banking_account')
 
   const handleOnSubmit = async (rawFormData: any) => {
-    mutateAsyncCreateInstitution(rawFormData)
-      .then(() => {
-        onClose()
-        setTimeout(() => {
-          setRegisteredWithSuccess(false)
-        }, 1000)
-      })
+    mutateAsyncCreateInstitution(rawFormData).then(() => {
+      onClose()
+      setTimeout(() => {
+        setRegisteredWithSuccess(false)
+      }, 1000)
+    })
   }
 
   const handleOnChangeStatus = (id: string, status: boolean) => {
@@ -67,6 +65,8 @@ export const Institutions = () => {
     }
 
     mutateAsyncUpdateInstitution(formData)
+      .then(() => refetch())
+      .finally(() => onCloseInstitutionConfirmation())
   }
 
   React.useEffect(() => {
@@ -81,13 +81,11 @@ export const Institutions = () => {
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} title={STRINGS.modal_title}>
-        {
-          (errorOnCreateInstitution || errorOnUpdateInstitution) && (
-            <div className="mb-8">
-              <Alert title={STRINGS.registered_error} type="error" />
-            </div>
-          )
-        }
+        {(errorOnCreateInstitution || errorOnUpdateInstitution) && (
+          <div className="mb-8">
+            <Alert title={STRINGS.registered_error} type="error" />
+          </div>
+        )}
         <form onSubmit={handleSubmit(handleOnSubmit)} className="flex flex-col gap-6">
           <div className="flex flex-col md:flex-row gap-6">
             <Input
@@ -117,55 +115,51 @@ export const Institutions = () => {
               error={errors.password?.message}
               {...register('password')}
             />
-            <Switch
-              label="Tem conta bancária"
-              {...register('has_banking_account')}
-            />
+            <Switch label="Tem conta bancária" {...register('has_banking_account')} />
           </div>
-          {
-            hasBankingAccount && (
-              <div className="flex flex-col md:flex-row gap-6">
-                <Input
-                  id="bank_agency"
-                  type="number"
-                  label="Agência"
-                  placeholder="Digite a agência"
-                  error={errors?.banking_account?.bank_agency?.message}
-                  {...register('banking_account.bank_agency')}
-                />
-                <Input
-                  id="account_number"
-                  type="text"
-                  label="Conta"
-                  placeholder="Digite a conta"
-                  mask="99999-9"
-                  error={errors?.banking_account?.account_number?.message}
-                  {...register('banking_account.account_number', {
-                    setValueAs: (value) => removeSpecialCharacters(value),
-                  })}
-                />
-                <Input
-                  id="bank_code"
-                  type="number"
-                  label="Código do banco"
-                  placeholder="Digite o código do banco"
-                  error={errors?.banking_account?.bank_code?.message}
-                  {...register('banking_account.bank_code')}
-                />
-              </div>
-            )
-          }
+          {hasBankingAccount && (
+            <div className="flex flex-col md:flex-row gap-6">
+              <Input
+                id="bank_agency"
+                type="number"
+                label="Agência"
+                placeholder="Digite a agência"
+                error={errors?.banking_account?.bank_agency?.message}
+                {...register('banking_account.bank_agency')}
+              />
+              <Input
+                id="account_number"
+                type="text"
+                label="Conta"
+                placeholder="Digite a conta"
+                mask="99999-9"
+                error={errors?.banking_account?.account_number?.message}
+                {...register('banking_account.account_number', {
+                  setValueAs: (value) => removeSpecialCharacters(value),
+                })}
+              />
+              <Input
+                id="bank_code"
+                type="number"
+                label="Código do banco"
+                placeholder="Digite o código do banco"
+                error={errors?.banking_account?.bank_code?.message}
+                {...register('banking_account.bank_code')}
+              />
+            </div>
+          )}
           <div className="flex flex-col md:flex-row mt-6">
             <Button label="Criar" type="submit" />
           </div>
         </form>
       </Modal>
-      <DashboardWrapper
-        title={STRINGS.title}
-        breadcrumbs={[
-          { title: STRINGS.title },
-        ]}
-      >
+      <ConfirmationModal
+        isOpen={isOpenInstitutionConfirmation}
+        onCancel={onCloseInstitutionConfirmation}
+        onContinue={() => handleOnChangeStatus(institutionIdToChange || '', institutionStatusToChange || false)}
+        loading={isPendingUpdateInstitution}
+      />
+      <DashboardWrapper title={STRINGS.title} breadcrumbs={[{ title: STRINGS.title }]}>
         <main className="flex flex-col gap-8">
           {/* <section className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
             <Stats
@@ -179,49 +173,42 @@ export const Institutions = () => {
             <RegisterListTable
               // onClickCreate={onOpen}
               loading={isFetching}
-              headers={[
-                STRINGS.table_header_name_text,
-                STRINGS.table_header_status_text,
-              ]}
+              headers={[STRINGS.table_header_name_text, STRINGS.table_header_status_text]}
             >
-              {
-                data?.data.map((institution) => (
-                  <RegisterListTableRow key={institution.id}>
-                    <RegisterListTableCol>
-                      {institution.name}
-                    </RegisterListTableCol>
-                    <RegisterListTableCol>
-                      <Switch
-                        label={STRINGS.input_active_label}
-                        defaultValue={institution.active_on_website}
-                        onChange={(event) => (
-                          handleOnChangeStatus(
-                            institution.id,
-                            event.target.checked
-                          )
-                        )}
-                      />
-                    </RegisterListTableCol>
-                    <RegisterListTableCol>
-                      <div className="w-full inline-flex justify-end gap-2">
-                        {/* <Button
+              {data?.data.map((institution) => (
+                <RegisterListTableRow key={institution.id}>
+                  <RegisterListTableCol>{institution.name}</RegisterListTableCol>
+                  <RegisterListTableCol>
+                    <Switch
+                      label={STRINGS.input_active_label}
+                      defaultValue={institution.active_on_website}
+                      checked={institution.active_on_website}
+                      onChange={(event) => {
+                        setInstitutionIdToChange(institution.id)
+                        setInstitutionStatusToChange(event.target.checked)
+                        onOpenInstitutionConfirmation()
+                      }}
+                    />
+                  </RegisterListTableCol>
+                  <RegisterListTableCol>
+                    <div className="w-full inline-flex justify-end gap-2">
+                      {/* <Button
                           label={STRINGS.button_edit_label}
                           colorScheme="gray"
                           variant="outline"
                           size="sm"
                         /> */}
-                        {/* <Button
+                      {/* <Button
                           label={STRINGS.button_remove_label}
                           colorScheme="red"
                           variant="outline"
                           size="sm"
                           icon={TrashIcon}
                         /> */}
-                      </div>
-                    </RegisterListTableCol>
-                  </RegisterListTableRow>
-                ))
-              }
+                    </div>
+                  </RegisterListTableCol>
+                </RegisterListTableRow>
+              ))}
             </RegisterListTable>
           </section>
         </main>

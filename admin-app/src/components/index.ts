@@ -1,6 +1,7 @@
 export { Alert } from './alert'
 export { Button } from './button'
 export { Card } from './card'
+export { ConfirmationModal } from './confirmation-modal'
 export { DashboardWrapper } from './dashboard-wrapper'
 export { FullPageLoader } from './full-page-loader'
 export { Modal, useModal } from './modal'
