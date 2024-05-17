@@ -276,7 +276,7 @@ export const RichTextEditor = ({
   tip,
 }: Props) => (
   <div className="flex flex-col">
-    <label className="mb-2 block text-sm dark:text-white">
+    <label className="mb-2 block text-md font-semibold dark:text-white">
       {label}
     </label>
     <div className="[&>div>div]:max-h-64 [&>div>div]:overflow-y-scroll [&>div]:mt-4 [&>div>div]:border [&>div>div]:rounded-lg [&>div>div]:py-3 [&>div>div]:px-4 [&>div>div]:text-gray-600 [&>div>div]:dark:text-gray-200">

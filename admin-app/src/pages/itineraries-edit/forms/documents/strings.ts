@@ -12,7 +12,6 @@ export const STRINGS = {
   modal_create_document_title: 'Criar documento',
   table_body_button_remove: 'Remover',
   table_body_no_results: 'Nenhum documento encontrado',
-  table_header_description: 'Descrição',
   table_header_title: 'Título',
   table_header_url: 'Link',
   title: 'Documentos',

@@ -6,7 +6,7 @@ export const listItinerariesEntries = (
   accessToken: string,
   id: string
 ): Promise<ListItineraryEntryResponse> => request(
-  `${variables.API_BASE_URL}admin/itinerary/${id}/entry`,
+  `${variables.API_BASE_URL}admin/itinerary/${id}/entry?order_by=position`,
   {
     headers: {
       Authorization: `Bearer ${accessToken}`,
