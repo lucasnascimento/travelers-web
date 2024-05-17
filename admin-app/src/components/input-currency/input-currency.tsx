@@ -28,7 +28,7 @@ export const InputCurrency = React.forwardRef<CurrencyInputProps, Props>(
       {
         label && (
           <label
-            className="mb-2 block text-sm dark:text-white"
+            className="mb-2 block text-md font-semibold dark:text-white"
             htmlFor={id}
           >
             {label}

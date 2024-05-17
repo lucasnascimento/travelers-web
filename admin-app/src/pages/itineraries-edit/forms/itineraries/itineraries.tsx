@@ -52,12 +52,9 @@ export const Itineraries = ({ id, onError, onSuccess }: Props) => {
     register: registerUpdateItineraryEntries,
     reset: resetUpdateItineraryEntries,
   } = useFormItineraryEntries()
-  const { isPending: isPendingRemoveItinerariesEntries, mutateAsync: mutateAsyncRemoveItinerariesEntries } =
-    useRemoveItinerariesEntry()
-  const { isPending: isPendingCreateItinerariesEntries, mutateAsync: mutateAsyncCreateItinerariesEntries } =
-    useCreateItinerariesEntries()
-  const { isPending: isPendingUpdateItinerariesEntries, mutateAsync: mutateAsyncUpdateItinerariesEntries } =
-    useUpdateItinerariesEntries()
+  const { isPending: isPendingRemoveItinerariesEntries, mutateAsync: mutateAsyncRemoveItinerariesEntries } = useRemoveItinerariesEntry()
+  const { isPending: isPendingCreateItinerariesEntries, mutateAsync: mutateAsyncCreateItinerariesEntries } = useCreateItinerariesEntries()
+  const { isPending: isPendingUpdateItinerariesEntries, mutateAsync: mutateAsyncUpdateItinerariesEntries } = useUpdateItinerariesEntries()
 
   const handleOnRemoveEntry = async () => {
     try {
@@ -210,64 +207,75 @@ export const Itineraries = ({ id, onError, onSuccess }: Props) => {
           </div>
         </form>
       </Modal>
-      {isFetching ? (
-        <div className="flex animate-pulse">
-          <span className="w-full h-52 rounded-xl py-40 bg-gray-200 dark:bg-gray-700" />
-        </div>
-      ) : (
-        <Card>
-          <div className="p-4 flex flex-col gap-8">
-            <h2 className="font-semibold text-xl mb-2 dark:text-white">{STRINGS.title}</h2>
-            <RegisterListTable
-              onClickCreate={onOpenEntryCreation}
-              loading={isFetching}
-              headers={[STRINGS.table_header_position, STRINGS.table_header_title, STRINGS.table_header_description]}
-            >
-              {data?.data?.map((entry) => (
-                <RegisterListTableRow key={entry.id}>
-                  <RegisterListTableCol>{entry.position}</RegisterListTableCol>
-                  <RegisterListTableCol>{entry.title}</RegisterListTableCol>
-                  <RegisterListTableCol>
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: entry.description,
-                      }}
-                    />
-                  </RegisterListTableCol>
-                  <RegisterListTableCol>
-                    <div className="flex gap-2">
-                      <Button
-                        label={STRINGS.table_body_button_edit}
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          resetUpdateItineraryEntries({
-                            description: entry.description,
-                            position: String(entry.position),
-                            title: entry.title,
-                          })
-                          setEntryIdToUpdate(entry.id)
-                          onOpenEntryUpdate()
-                        }}
-                      />
-                      <Button
-                        label={STRINGS.table_body_button_remove}
-                        size="sm"
-                        variant="outline"
-                        colorScheme="red"
-                        onClick={() => {
-                          setEntryIdToRemove(entry.id)
-                          onOpenEntryRemoval()
-                        }}
-                      />
-                    </div>
-                  </RegisterListTableCol>
-                </RegisterListTableRow>
-              ))}
-            </RegisterListTable>
+      {isFetching
+        ? (
+          <div className="flex animate-pulse">
+            <span className="w-full h-52 rounded-xl py-40 bg-gray-200 dark:bg-gray-700" />
           </div>
-        </Card>
-      )}
+        )
+        : (
+          <Card>
+            <div className="p-4 flex flex-col gap-8">
+              <h2 className="font-semibold text-xl mb-2 dark:text-white">{STRINGS.title}</h2>
+              <RegisterListTable
+                onClickCreate={onOpenEntryCreation}
+                loading={isFetching}
+                headers={[STRINGS.table_header_position, STRINGS.table_header_title, STRINGS.table_header_description]}
+              >
+                {data?.data?.map((entry) => (
+                  <RegisterListTableRow key={entry.id}>
+                    <RegisterListTableCol>
+                      <p className="dark:text-gray-200">
+                        {entry.position}
+                      </p>
+                    </RegisterListTableCol>
+                    <RegisterListTableCol>
+                      <p className="dark:text-gray-200">
+                        {entry.title}
+                      </p>
+                    </RegisterListTableCol>
+                    <RegisterListTableCol>
+                      <div
+                        className="dark:text-gray-200"
+                        dangerouslySetInnerHTML={{
+                          __html: entry.description,
+                        }}
+                      />
+                    </RegisterListTableCol>
+                    <RegisterListTableCol>
+                      <div className="flex gap-2">
+                        <Button
+                          label={STRINGS.table_body_button_edit}
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            resetUpdateItineraryEntries({
+                              description: entry.description,
+                              position: String(entry.position),
+                              title: entry.title,
+                            })
+                            setEntryIdToUpdate(entry.id)
+                            onOpenEntryUpdate()
+                          }}
+                        />
+                        <Button
+                          label={STRINGS.table_body_button_remove}
+                          size="sm"
+                          variant="outline"
+                          colorScheme="red"
+                          onClick={() => {
+                            setEntryIdToRemove(entry.id)
+                            onOpenEntryRemoval()
+                          }}
+                        />
+                      </div>
+                    </RegisterListTableCol>
+                  </RegisterListTableRow>
+                ))}
+              </RegisterListTable>
+            </div>
+          </Card>
+        )}
     </>
   )
 }

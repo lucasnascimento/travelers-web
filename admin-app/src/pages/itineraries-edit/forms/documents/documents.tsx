@@ -4,8 +4,8 @@ import {
   Button,
   Card,
   ConfirmationModal,
-  Modal,
   Input,
+  Modal,
   RegisterListTable,
   RegisterListTableCol,
   RegisterListTableRow,
@@ -37,18 +37,15 @@ export const Documents = ({ id, onError, onSuccess }: Props) => {
     onOpen: onOpenDocumentConfirmation,
   } = useModal()
   const { isOpen: isOpenDocumentCreation, onClose: onCloseDocumentCreation, onOpen: onOpenDocumentCreation } = useModal()
-  const { isPending: isPendingRemoveItinerariesDocuments, mutateAsync: mutateAsyncRemoveItinerariesDocuments } =
-    useRemoveItinerariesRule()
+  const { isPending: isPendingRemoveItinerariesDocuments, mutateAsync: mutateAsyncRemoveItinerariesDocuments } = useRemoveItinerariesRule()
   const {
     formState: { errors: errorsItineraryDocuments },
     handleSubmit: handleSubmitItineraryDocuments,
     register: registerItineraryDocuments,
     reset: resetItineraryDocuments,
   } = useFormItineraryDocuments()
-  const { isPending: isPendingCreateItinerariesDocuments, mutateAsync: mutateAsyncCreateItinerariesDocuments } =
-    useCreateItinerariesDocuments()
-  const { isPending: isPendingUploadItinerariesDocuments, mutateAsync: mutateAsyncUploadItinerariesDocuments } =
-    useUploadItinerariesDocuments()
+  const { isPending: isPendingCreateItinerariesDocuments, mutateAsync: mutateAsyncCreateItinerariesDocuments } = useCreateItinerariesDocuments()
+  const { isPending: isPendingUploadItinerariesDocuments, mutateAsync: mutateAsyncUploadItinerariesDocuments } = useUploadItinerariesDocuments()
 
   const handleOnRemoveDocument = async () => {
     try {
@@ -155,44 +152,50 @@ export const Documents = ({ id, onError, onSuccess }: Props) => {
         onContinue={handleOnRemoveDocument}
         loading={isPendingRemoveItinerariesDocuments}
       />
-      {isFetching ? (
-        <div className="flex animate-pulse">
-          <span className="w-full h-52 rounded-xl py-40 bg-gray-200 dark:bg-gray-700" />
-        </div>
-      ) : (
-        <Card>
-          <div className="p-4 flex flex-col gap-8">
-            <h2 className="font-semibold text-xl mb-2 dark:text-white">{STRINGS.title}</h2>
-            <RegisterListTable
-              onClickCreate={onOpenDocumentCreation}
-              loading={isFetching}
-              headers={[STRINGS.table_header_title, STRINGS.table_header_description, STRINGS.table_header_url]}
-            >
-              {data?.data?.map((document) => (
-                <RegisterListTableRow key={document.id}>
-                  <RegisterListTableCol>{document.title}</RegisterListTableCol>
-                  <RegisterListTableCol>
-                    <a className="text-blue-500" href={document.link} target="_blank" rel="noreferrer">
-                      {document.link}
-                    </a>
-                  </RegisterListTableCol>
-                  <RegisterListTableCol>
-                    <Button
-                      label={STRINGS.table_body_button_remove}
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {
-                        setDocumentIdToRemove(document.id)
-                        onOpenDocumentConfirmation()
-                      }}
-                    />
-                  </RegisterListTableCol>
-                </RegisterListTableRow>
-              ))}
-            </RegisterListTable>
+      {isFetching
+        ? (
+          <div className="flex animate-pulse">
+            <span className="w-full h-52 rounded-xl py-40 bg-gray-200 dark:bg-gray-700" />
           </div>
-        </Card>
-      )}
+        )
+        : (
+          <Card>
+            <div className="p-4 flex flex-col gap-8">
+              <h2 className="font-semibold text-xl mb-2 dark:text-white">{STRINGS.title}</h2>
+              <RegisterListTable
+                onClickCreate={onOpenDocumentCreation}
+                loading={isFetching}
+                headers={[STRINGS.table_header_title, STRINGS.table_header_url]}
+              >
+                {data?.data?.map((document) => (
+                  <RegisterListTableRow key={document.id}>
+                    <RegisterListTableCol>
+                      <p className="dark:text-gray-200">
+                        {document.title}
+                      </p>
+                    </RegisterListTableCol>
+                    <RegisterListTableCol>
+                      <a className="text-blue-500" href={document.link} target="_blank" rel="noreferrer">
+                        {document.link}
+                      </a>
+                    </RegisterListTableCol>
+                    <RegisterListTableCol>
+                      <Button
+                        label={STRINGS.table_body_button_remove}
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setDocumentIdToRemove(document.id)
+                          onOpenDocumentConfirmation()
+                        }}
+                      />
+                    </RegisterListTableCol>
+                  </RegisterListTableRow>
+                ))}
+              </RegisterListTable>
+            </div>
+          </Card>
+        )}
     </>
   )
 }

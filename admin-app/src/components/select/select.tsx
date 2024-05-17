@@ -20,7 +20,7 @@ export const Select = React.forwardRef<HTMLSelectElement, Props>(
   }, ref) => (
     <fieldset className={`flex flex-col ${className}`}>
       <label
-        className="mb-2 block text-sm dark:text-white"
+        className="mb-2 block text-md font-semibold dark:text-white"
         htmlFor={id}
       >
         {label}
