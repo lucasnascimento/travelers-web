@@ -90,6 +90,7 @@ export type Props = {
 }
 
 export const PaymentData = ({ id, onCancel, onError, onSuccess }: Props) => {
+  const [isLoading, setIsLoading] = React.useState(true)
   const { data, isFetching } = useListItinerariesRules(id || '')
   const {
     control: controlItineraryRules,
@@ -123,6 +124,8 @@ export const PaymentData = ({ id, onCancel, onError, onSuccess }: Props) => {
     resetItineraryRules({
       rules: [...(formatedRules || [])],
     })
+
+    setIsLoading(isFetching)
   }, [data?.data])
 
   const handleOnSubmitItineraryRules = async (rawData: any) => {
@@ -156,7 +159,8 @@ export const PaymentData = ({ id, onCancel, onError, onSuccess }: Props) => {
     scrollToTop()
   }
 
-  return isFetching ? (
+
+  return isLoading ? (
     <div className="flex animate-pulse">
       <span className="w-full h-52 rounded-xl py-40 bg-gray-200 dark:bg-gray-700" />
     </div>
